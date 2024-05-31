@@ -64,7 +64,7 @@ We can read in the stock prices. The data is 1.2M observations. The most importa
 
 ```{r}
 # STOCK PRICES
-sp_500_prices_tbl <- read_rds("sp_500_prices_tbl.rds")
+sp_500_prices_tbl <- read_rds("~/GitHub/ss24-bdml-Adrian-0402/source_data/unsupervised/sp_500_prices_tbl.rds")
 sp_500_prices_tbl
 ```
 
@@ -75,7 +75,7 @@ The second data frame contains information about the stocks the most important o
 
 ```{r}
 # SECTOR INFORMATION
-sp_500_index_tbl <- read_rds("sp_500_index_tbl.rds")
+sp_500_index_tbl <- read_rds("~/GitHub/ss24-bdml-Adrian-0402/source_data/unsupervised/sp_500_index_tbl.rds")
 sp_500_index_tbl
 ```
 
@@ -119,7 +119,9 @@ Your first task is to convert to a tibble named `sp_500_daily_returns_tbl` by pe
 
 ```{r}
 # Apply your data transformation skills!
-
+sp_500_daily_returns_tbl <- sp_500_prices_tbl %>% 
+  select(symbol, date, adjusted) %>% 
+  filter(year(date) >= 2018) %>%
 # Output: sp_500_daily_returns_tbl
 ```
 
