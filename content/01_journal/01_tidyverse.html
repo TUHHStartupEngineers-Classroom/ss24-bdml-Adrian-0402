@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="author" content="Joschka Schwarz">
-<title>MyLabJournal - Tidyverse</title>
+<meta name="author" content="Adrian Florea">
+<title>MyLabJournal - Supervised Machine Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -72,10 +72,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -160,22 +157,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
    
   <ul class="collapse">
-<li><a href="#text-formatting" id="toc-text-formatting" class="nav-link active" data-scroll-target="#text-formatting"><span class="header-section-number">1</span> Text Formatting</a></li>
-  <li>
-<a href="#headings" id="toc-headings" class="nav-link" data-scroll-target="#headings"><span class="header-section-number">2</span> Headings</a>
-  <ul class="collapse">
-<li><a href="#header-2" id="toc-header-2" class="nav-link" data-scroll-target="#header-2"><span class="header-section-number">2.1</span> Header 2</a></li>
-  </ul>
-</li>
-  <li><a href="#links-images" id="toc-links-images" class="nav-link" data-scroll-target="#links-images"><span class="header-section-number">3</span> Links &amp; Images</a></li>
-  <li><a href="#lists" id="toc-lists" class="nav-link" data-scroll-target="#lists"><span class="header-section-number">4</span> Lists</a></li>
-  <li><a href="#tables" id="toc-tables" class="nav-link" data-scroll-target="#tables"><span class="header-section-number">5</span> Tables</a></li>
-  <li><a href="#source-code" id="toc-source-code" class="nav-link" data-scroll-target="#source-code"><span class="header-section-number">6</span> Source Code</a></li>
+<li><a href="#challenge-2---supervised-ml" id="toc-challenge-2---supervised-ml" class="nav-link active" data-scroll-target="#challenge-2---supervised-ml"><span class="header-section-number">1</span> Challenge 2 - Supervised ML</a></li>
+  <li><a href="#some-remarks" id="toc-some-remarks" class="nav-link" data-scroll-target="#some-remarks"><span class="header-section-number">2</span> Some Remarks</a></li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title">Tidyverse</h1>
+<h1 class="title">Supervised Machine Learning</h1>
 </div>
 
 
@@ -185,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Joschka Schwarz </p>
+             <p>Adrian Florea </p>
           </div>
   </div>
     
@@ -194,149 +182,159 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You can delete everything in here and start fresh.</p>
-</div>
-</div>
-<p>This is a <code>.qmd</code> file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.</p>
-<p>To learn more about Quarto websites visit <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a>.</p>
-<section id="text-formatting" class="level1" data-number="1"><h1 data-number="1">
-<span class="header-section-number">1</span> Text Formatting</h1>
-<p><em>italics</em> and <strong>bold</strong></p>
-<p>superscript<sup>2</sup> / subscript<sub>2</sub></p>
-<p><del>strikethrough</del></p>
-<p><code>verbatim code</code></p>
-<blockquote class="blockquote">
-<p>Blockquote</p>
-</blockquote>
-</section><section id="headings" class="level1" data-number="2"><h1 data-number="2">
-<span class="header-section-number">2</span> Headings</h1>
-<section id="header-2" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="header-2">
-<span class="header-section-number">2.1</span> Header 2</h2>
-<section id="header-3" class="level3"><h3 class="anchored" data-anchor-id="header-3">Header 3</h3>
-<section id="header-4" class="level4"><h4 class="anchored" data-anchor-id="header-4">Header 4</h4>
-<section id="header-5" class="level5"><h5 class="anchored" data-anchor-id="header-5">Header 5</h5>
-<section id="header-6" class="level6"><h6 class="anchored" data-anchor-id="header-6">Header 6</h6>
-</section></section></section></section></section></section><section id="links-images" class="level1" data-number="3"><h1 data-number="3">
-<span class="header-section-number">3</span> Links &amp; Images</h1>
-<p><a href="https://quarto.org" class="uri">https://quarto.org</a></p>
-<p><a href="https://quarto.org">Quarto</a></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="../../assets/img/elephant.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Caption</figcaption></figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="https://quarto.org"><img src="../../assets/img/elephant.png" class="img-fluid figure-img"></a></p>
-<figcaption class="figure-caption">Caption</figcaption></figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="https://quarto.org" title="An elephant"><img src="../../assets/img/elephant.png" class="img-fluid figure-img"></a></p>
-<figcaption class="figure-caption">Caption</figcaption></figure>
-</div>
-</section><section id="lists" class="level1" data-number="4"><h1 data-number="4">
-<span class="header-section-number">4</span> Lists</h1>
-<ul>
-<li>
-<p>unordered list</p>
-<ul>
-<li>sub-item 1</li>
-<li>sub-item 2
-<ul>
-<li>sub-sub-item 1</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>item 2</p>
-<p>Continued (indent 4 spaces)</p>
-</li>
-</ul>
-<ol type="1">
-<li>ordered list</li>
-<li>item 2
-<ol type="i">
-<li>sub-item 1
-<ol type="A">
-<li>sub-sub-item 1</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<ol class="example" type="1">
-<li>A list whose numbering</li>
-</ol>
-<p>continues after</p>
-<ol start="2" class="example" type="1">
-<li>an interruption</li>
-</ol></section><section id="tables" class="level1" data-number="5"><h1 data-number="5">
-<span class="header-section-number">5</span> Tables</h1>
-<table class="table">
-<thead><tr class="header">
-<th style="text-align: right;">Right</th>
-<th style="text-align: left;">Left</th>
-<th>Default</th>
-<th style="text-align: center;">Center</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">12</td>
-<td style="text-align: left;">12</td>
-<td>12</td>
-<td style="text-align: center;">12</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">123</td>
-<td style="text-align: left;">123</td>
-<td>123</td>
-<td style="text-align: center;">123</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">1</td>
-<td>1</td>
-<td style="text-align: center;">1</td>
-</tr>
-</tbody>
-</table></section><section id="source-code" class="level1" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> Source Code</h1>
-<p>Use ``` to delimit blocks of source code:</p>
-<pre><code>code</code></pre>
-<p>Add a language to syntax highlight code blocks:</p>
-<div class="cell" data-hash="01_tidyverse_cache/html/unnamed-chunk-1_78745102f85d5cf89cad6fe4a83ca938">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] 2</code></pre>
-</div>
-</div>
-<div class="cell" data-hash="01_tidyverse_cache/html/unnamed-chunk-2_f6e8e1bca112a7054679dca3031b6157">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>cars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</header><section id="challenge-2---supervised-ml" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Challenge 2 - Supervised ML</h1>
+<div class="cell" data-hash="01_tidyverse_cache/html/unnamed-chunk-1_ccad5d1d5b52b4c0ac362cbf8edb2465">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Standard</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Modeling</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(parsnip)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Preprocessing &amp; Sampling</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(workflows)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Modeling Error Metrics</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">library</span>(yardstick)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co"># 1.0 Build a model (GLM) and load Data ----</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a>model_glm <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1-18"><a href="#cb1-18"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a>bike_features_tbl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"~/GitHub/ss24-bdml-Adrian-0402/source_data/raw_data/bike_features_tbl.rds"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>bike_features_tbl <span class="ot">&lt;-</span> bike_features_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb1-23"><a href="#cb1-23"></a>  </span>
+<span id="cb1-24"><a href="#cb1-24"></a>  <span class="fu">select</span>(model<span class="sc">:</span>url, <span class="st">`</span><span class="at">Rear Derailleur</span><span class="st">`</span>, <span class="st">`</span><span class="at">Shift Lever</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-25"><a href="#cb1-25"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-26"><a href="#cb1-26"></a>  <span class="fu">select</span>(id, <span class="fu">everything</span>(), <span class="sc">-</span>url)</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co"># Split the data first</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="fu">set.seed</span>(<span class="at">seed =</span> <span class="dv">1112</span>)</span>
+<span id="cb1-31"><a href="#cb1-31"></a>split_obj <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(bike_features_tbl, <span class="at">prop   =</span> <span class="fl">0.80</span>, </span>
+<span id="cb1-32"><a href="#cb1-32"></a>                                    <span class="at">strata =</span> <span class="st">"category_2"</span>)</span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="co"># Check if testing contains all category_2 values</span></span>
+<span id="cb1-35"><a href="#cb1-35"></a>split_obj <span class="sc">%&gt;%</span> <span class="fu">training</span>() <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(category_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["speed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["dist"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"2"},{"1":"4","2":"10"},{"1":"7","2":"4"},{"1":"7","2":"22"},{"1":"8","2":"16"},{"1":"9","2":"10"},{"1":"10","2":"18"},{"1":"10","2":"26"},{"1":"10","2":"34"},{"1":"11","2":"17"},{"1":"11","2":"28"},{"1":"12","2":"14"},{"1":"12","2":"20"},{"1":"12","2":"24"},{"1":"12","2":"28"},{"1":"13","2":"26"},{"1":"13","2":"34"},{"1":"13","2":"34"},{"1":"13","2":"46"},{"1":"14","2":"26"},{"1":"14","2":"36"},{"1":"14","2":"60"},{"1":"14","2":"80"},{"1":"15","2":"20"},{"1":"15","2":"26"},{"1":"15","2":"54"},{"1":"16","2":"32"},{"1":"16","2":"40"},{"1":"17","2":"32"},{"1":"17","2":"40"},{"1":"17","2":"50"},{"1":"18","2":"42"},{"1":"18","2":"56"},{"1":"18","2":"76"},{"1":"18","2":"84"},{"1":"19","2":"36"},{"1":"19","2":"46"},{"1":"19","2":"68"},{"1":"20","2":"32"},{"1":"20","2":"48"},{"1":"20","2":"52"},{"1":"20","2":"56"},{"1":"20","2":"64"},{"1":"22","2":"66"},{"1":"23","2":"54"},{"1":"24","2":"70"},{"1":"24","2":"92"},{"1":"24","2":"93"},{"1":"24","2":"120"},{"1":"25","2":"85"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["category_2"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"Race"},{"1":"Endurance"},{"1":"E-Road"},{"1":"Cyclocross"},{"1":"Triathlon Bike"},{"1":"Fat Bikes"},{"1":"Cross-Country"},{"1":"All-Road"},{"1":"E-Gravel"},{"1":"E-Mountain"},{"1":"Downhill"},{"1":"Dirt Jump"},{"1":"Enduro"},{"1":"E-City"},{"1":"E-Trekking"},{"1":"E-Fitness"},{"1":"City"},{"1":"Touring"},{"1":"Adventure"},{"1":"Trail"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>split_obj <span class="sc">%&gt;%</span> <span class="fu">testing</span>() <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(category_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["category_2"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"Race"},{"1":"Endurance"},{"1":"Cyclocross"},{"1":"Triathlon Bike"},{"1":"Cross-Country"},{"1":"Adventure"},{"1":"All-Road"},{"1":"Trail"},{"1":"E-Mountain"},{"1":"Downhill"},{"1":"Enduro"},{"1":"E-City"},{"1":"E-Trekking"},{"1":"City"},{"1":"Touring"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Assign training and test data</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>train_tbl <span class="ot">&lt;-</span> <span class="fu">training</span>(split_obj)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>test_tbl  <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_obj)</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># We have to remove spaces and dashes from the column names</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>train_tbl <span class="ot">&lt;-</span> train_tbl <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(train_tbl), <span class="st">" |-"</span>, <span class="st">"_"</span>))</span>
+<span id="cb3-7"><a href="#cb3-7"></a>test_tbl  <span class="ot">&lt;-</span> test_tbl  <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(test_tbl),  <span class="st">" |-"</span>, <span class="st">"_"</span>))</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># 2.0 Create features with the recipes package ----</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>recipe_obj <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price <span class="sc">~</span> ., <span class="at">data =</span> train_tbl) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="fu">step_rm</span>(<span class="fu">c</span>(model<span class="sc">:</span>weight),category_1,<span class="fu">c</span>(category_3<span class="sc">:</span>gender)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>(), <span class="sc">-</span> <span class="fu">all_outcomes</span>(), <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>  <span class="co"># Use median to guess missing values</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_predictors</span>())</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co"># train_transformed_tbl &lt;- bake(recipe_obj, new_data = train_tbl)</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co"># test_transformed_tbl  &lt;- bake(recipe_obj, new_data = test_tbl)</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co"># 3.0 Bundle model and recipe with the workflow package</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a></span>
+<span id="cb3-24"><a href="#cb3-24"></a><span class="co"># Trying to use prep() or bake() and then bundle it into a workflow</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="co"># gives us the error:</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a></span>
+<span id="cb3-27"><a href="#cb3-27"></a><span class="co"># Error in `add_recipe()`:</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="co"># !Can't add a trained recipe to a workflow.</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="co"># One cannot use prep() and bake() if it is to be bundled into a workflow</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="co"># therefore we omit those steps from above and use it "unprepped"</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a></span>
+<span id="cb3-33"><a href="#cb3-33"></a>bikes_wflow <span class="ot">&lt;-</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb3-35"><a href="#cb3-35"></a>  <span class="fu">add_model</span>(model_glm) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-36"><a href="#cb3-36"></a>  <span class="fu">add_recipe</span>(recipe_obj)</span>
+<span id="cb3-37"><a href="#cb3-37"></a></span>
+<span id="cb3-38"><a href="#cb3-38"></a><span class="co"># 4.0 Evaluate model with the yardstick package</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a></span>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co"># Fit the data using workflow</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a>bikes_fit <span class="ot">&lt;-</span> </span>
+<span id="cb3-42"><a href="#cb3-42"></a>  bikes_wflow <span class="sc">%&gt;%</span> </span>
+<span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">fit</span>(<span class="at">data =</span> train_tbl)</span>
+<span id="cb3-44"><a href="#cb3-44"></a></span>
+<span id="cb3-45"><a href="#cb3-45"></a>calc_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">new_data =</span> test_tbl) {</span>
+<span id="cb3-46"><a href="#cb3-46"></a>  </span>
+<span id="cb3-47"><a href="#cb3-47"></a>  model <span class="sc">%&gt;%</span></span>
+<span id="cb3-48"><a href="#cb3-48"></a>    <span class="fu">predict</span>(<span class="at">new_data =</span> new_data) <span class="sc">%&gt;%</span></span>
+<span id="cb3-49"><a href="#cb3-49"></a>    </span>
+<span id="cb3-50"><a href="#cb3-50"></a>    <span class="fu">bind_cols</span>(new_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(price)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-51"><a href="#cb3-51"></a>    </span>
+<span id="cb3-52"><a href="#cb3-52"></a>    yardstick<span class="sc">::</span><span class="fu">metrics</span>(<span class="at">truth =</span> price, <span class="at">estimate =</span> .pred_res)</span>
+<span id="cb3-53"><a href="#cb3-53"></a>  </span>
+<span id="cb3-54"><a href="#cb3-54"></a>}</span>
+<span id="cb3-55"><a href="#cb3-55"></a></span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="co"># Evaluate</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">calc_metrics</span>(<span class="at">new_data =</span> test_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning: ! There are new levels in a factor: `Shimano Ultegra Di2 RX805 GS`, `SRAM XX1
+#&gt;   Eagle`, `SRAM XX1 Eagle 12s`, `SRAM X01 DH`, `Shimano SLX M7000 GS`, and
+#&gt;   `SRAM Force CX1 SGS`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning: ! There are new levels in a factor: `Shimano Di2 Remote Sprinter Shifter`,
+#&gt;   `SRAM XX1 Eagle Trigger 12s`, and `Tektro Matchmaker`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+#&gt; prediction from rank-deficient fit; attr(*, "non-estim") has doubtful cases</code></pre>
+</div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".metric"],"name":[1],"type":["chr"],"align":["left"]},{"label":[".estimator"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".estimate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"rmse","2":"standard","3":"813.0782792"},{"1":"rsq","2":"standard","3":"0.7639036"},{"1":"mae","2":"standard","3":"555.1790854"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="01_tidyverse_cache/html/unnamed-chunk-3_c54f7526e0f7f04368360fa7b6e5663a">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">plot</span>(cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="01_tidyverse_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="01_tidyverse_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
+</section><section id="some-remarks" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Some Remarks</h1>
+<p>Using all_nominal() creates a lot more columns for every specific type as opposed to the advanced string manipulation done for rear derailleurs and shift levers in the business case (which grouped similar names). Therefore, unknown values can appear during predictions, because they only appeared in the training data, and not in the testing data. Thus, step_dummy() could not create variables for the unknown testing data set.</p>
+<p>Although step_impute_median() makes predicting with missing values possible, the result is hardly accurate. This can be seen by large errors for certain data points.</p>
+<div class="cell" data-hash="01_tidyverse_cache/html/unnamed-chunk-2_89caea1eb0bbb3bd8e2234ccbe27e70a">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">predict</span>(<span class="at">new_data =</span> test_tbl) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">bind_cols</span>(test_tbl <span class="sc">%&gt;%</span> <span class="fu">select</span>(price)) <span class="sc">%&gt;%</span> <span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning: ! There are new levels in a factor: `Shimano Ultegra Di2 RX805 GS`, `SRAM XX1
+#&gt;   Eagle`, `SRAM XX1 Eagle 12s`, `SRAM X01 DH`, `Shimano SLX M7000 GS`, and
+#&gt;   `SRAM Force CX1 SGS`.</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning: ! There are new levels in a factor: `Shimano Di2 Remote Sprinter Shifter`,
+#&gt;   `SRAM XX1 Eagle Trigger 12s`, and `Tektro Matchmaker`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+#&gt; prediction from rank-deficient fit; attr(*, "non-estim") has doubtful cases</code></pre>
 </div>
 </div>
 
@@ -690,7 +688,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":true,"descPosition":"bottom","selector":".lightbox","closeEffect":"zoom","openEffect":"zoom"});</script>
+
 
 
 </body></html>
