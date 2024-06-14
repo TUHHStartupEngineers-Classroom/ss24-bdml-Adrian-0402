@@ -104,4 +104,4 @@ predictions_tbl
 # already exists.
 
 leader_model_h2o %>% 
-  h2o.saveModel(path = "~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/")
+  h2o.saveModel(path = "CHALLENGES/")
