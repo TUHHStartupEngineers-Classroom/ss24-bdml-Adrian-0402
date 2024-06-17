@@ -1,13 +1,9 @@
 # H2O modeling
+library(tidyverse)
 library(h2o)
-
-employee_attrition_tbl <- read_csv("~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv")
-definitions_raw_tbl    <- read_excel("~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/data_definitions.xlsx", sheet = 1, col_names = FALSE)
-employee_attrition_readable_tbl <- process_hr_data_readable(employee_attrition_tbl, definitions_raw_tbl)
-set.seed(seed = 1113)
-split_obj                       <- rsample::initial_split(employee_attrition_readable_tbl, prop = 0.85)
-train_readable_tbl              <- training(split_obj)
-test_readable_tbl               <- testing(split_obj)
+library(readxl)
+library(recipes)
+library(rsample)
 
 process_hr_data_readable <- function(data, definitions_tbl) {
   
@@ -47,6 +43,14 @@ process_hr_data_readable <- function(data, definitions_tbl) {
   return(data_merged_tbl)
   
 }
+
+employee_attrition_tbl <- read_csv("~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv")
+definitions_raw_tbl    <- read_excel("~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/data_definitions.xlsx", sheet = 1, col_names = FALSE)
+employee_attrition_readable_tbl <- process_hr_data_readable(employee_attrition_tbl, definitions_raw_tbl)
+set.seed(seed = 1113)
+split_obj                       <- rsample::initial_split(employee_attrition_readable_tbl, prop = 0.85)
+train_readable_tbl              <- training(split_obj)
+test_readable_tbl               <- testing(split_obj)
 
 recipe_obj <- recipe(Attrition ~., data = train_readable_tbl) %>% 
   step_zv(all_predictors()) %>% 
@@ -100,10 +104,8 @@ automl_models_h2o@leaderboard %>%
   extract_h2o_model_name_by_position(6) %>% 
   h2o.getModel()
 
-# DeepLearning_grid_3_AutoML_2_20240613_211800_model_1
-
 h2o.getModel("DeepLearning_grid_3_AutoML_2_20240613_211800_model_1") %>% 
-  h2o.saveModel(path = "~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/")
+  h2o.saveModel(path = "source_data/automated/")
 
 deep_learning_h2o <- h2o.loadModel("~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/DeepLearning_grid_3_AutoML_2_20240613_211800_model_1")
 

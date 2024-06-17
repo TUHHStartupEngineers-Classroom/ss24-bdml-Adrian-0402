@@ -3,6 +3,645 @@ title: "Performance Measures"
 author: "Adrian Florea"
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+For the same reason as in the previous challenge, to prevent issues, the code here is not run directly. The resulting plots are imported. Once again, for the full computation steps, refer to the corresponding `.R` file `performance_measures_CHALLENGE.R` located in folder `...\CHALLENGES`.
+
+# Leaderboard visualization
+A broad overview of the top 15 computed models. The results look already highly accurate, which might be because of a more powerful system on my side. We can see that stacked ensemble algorithms are the best performing ones.
+```{r}
+#| eval: false
+
+library(h2o)
+library(tidyverse)
+library(rsample)
+library(recipes)
+library(cowplot)
+library(glue)
+
+h2o.init()
+
+# We need the data from the previous challenge, so either run source() or
+# directly run this file if the previous challenge file already ran before
+
+# source("CHALLENGES/automated_ml_II_CHALLENGE.R")
+
+# 1 Leaderboard visualization ----
+
+# Function for plotting hte leaderboard
+
+plot_h2o_leaderboard <- function(h2o_leaderboard, order_by = c("auc", "logloss"), 
+                                 n_max = 20, size = 4, include_lbl = TRUE) {
+  
+  # Setup inputs
+  # adjust input so that all formats are working
+  order_by <- tolower(order_by[[1]])
+  
+  leaderboard_tbl <- h2o_leaderboard %>%
+    as.tibble() %>%
+    select(-c(aucpr, mean_per_class_error, rmse, mse)) %>% 
+    mutate(model_type = str_extract(model_id, "[^_]+")) %>%
+    rownames_to_column(var = "rowname") %>%
+    mutate(model_id = paste0(rowname, ". ", model_id) %>% as.factor())
+  
+  # Transformation
+  if (order_by == "auc") {
+    
+    data_transformed_tbl <- leaderboard_tbl %>%
+      slice(1:n_max) %>%
+      mutate(
+        model_id   = as_factor(model_id) %>% reorder(auc),
+        model_type = as.factor(model_type)
+      ) %>%
+      pivot_longer(cols = -c(model_id, model_type, rowname), 
+                   names_to = "key", 
+                   values_to = "value", 
+                   names_transform = list(key = forcats::fct_inorder)
+      )
+    
+  } else if (order_by == "logloss") {
+    
+    data_transformed_tbl <- leaderboard_tbl %>%
+      slice(1:n_max) %>%
+      mutate(
+        model_id   = as_factor(model_id) %>% reorder(logloss) %>% fct_rev(),
+        model_type = as.factor(model_type)
+      ) %>%
+      pivot_longer(cols = -c(model_id, model_type, rowname), 
+                   names_to = "key", 
+                   values_to = "value", 
+                   names_transform = list(key = forcats::fct_inorder)
+      )
+    
+  } else {
+    # If nothing is supplied
+    stop(paste0("order_by = '", order_by, "' is not a permitted option."))
+  }
+  
+  # Visualization
+  g <- data_transformed_tbl %>%
+    ggplot(aes(value, model_id, color = model_type)) +
+    geom_point(size = size) +
+    facet_wrap(~ key, scales = "free_x") +
+    labs(title = "Leaderboard Metrics",
+         subtitle = paste0("Ordered by: ", toupper(order_by)),
+         y = "Model Postion, Model ID", x = "")
+  
+  if (include_lbl) g <- g + geom_label(aes(label = round(value, 2), 
+                                           hjust = "inward"))
+  
+  return(g)
+  
+}
+
+plot_h2o_leaderboard(automl_models_h2o@leaderboard,"auc", 15, 3, T)
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot1.png", width = 25, height = 20, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot1.png")
+```
+
+# Tuning a model with grid search
+If one wants to improve their models, the easiest way is to just allow more computing time. However, it is also possible to fine tune a model by making a "grid" of various parameter combinations that are used to constrain the model during training. In this case, we can use a small amount of so called hyperparameters to squeeze out a bit more performance out of our model.
+```{r}
+#| eval: false
+
+# 2 Tune a model with grid search ----
+
+# May have to change number whenever models are recomputed
+# Let's refine a GBM model here
+gbm_h2o <- automl_models_h2o@leaderboard %>% 
+  extract_h2o_model_name_by_position(6) %>% 
+  h2o.getModel()
+
+# Checking the model: 3.58% error for training set
+gbm_h2o
+
+# For the test set we get ~8.85% error
+h2o.performance(gbm_h2o, newdata = as.h2o(test_tbl))
+
+# Save for journal
+gbm_h2o %>% 
+  h2o.performance(newdata = as.h2o(test_tbl)) %>% 
+  h2o.confusionMatrix() %>% 
+  as_tibble() %>% 
+  saveRDS("CHALLENGES/performance_measures_files/gbm_untuned.rds")
+
+gbm_grid_01 <- h2o.grid(
+  
+  # See help page for available algos
+  algorithm = "gbm",
+  
+  # I just use the same as the object
+  grid_id = "gbm_grid_01",
+  
+  x = x,
+  y = y,
+  
+  # training and validation frame and crossfold validation
+  training_frame   = train_h2o,
+  validation_frame = valid_h2o,
+  nfolds = 5,
+  
+  hyper_params = list(
+    max_depth = c(9, 10, 11, 12),
+    learn_rate = c(0.1, 0.13, 0.15, 0.17)
+  )
+)
+
+h2o.getGrid(grid_id = "gbm_grid_01", sort_by = "auc", decreasing = TRUE)
+
+# Check which model ID was the best
+gbm_grid_01_model_best <- h2o.getModel("gbm_grid_01_model_31")
+
+# Noticeable difference but not too overfit
+gbm_grid_01_model_best %>% h2o.auc(train = T, valid = T, xval = T)
+
+# On the test data, we now get an error of 7.7%, which is a small improvement!
+gbm_grid_01_model_best %>%
+  h2o.performance(newdata = as.h2o(test_tbl))
+
+# Save for journal
+gbm_grid_01_model_best %>% 
+  h2o.performance(newdata = as.h2o(test_tbl)) %>% 
+  h2o.confusionMatrix() %>% 
+  as_tibble() %>% 
+  saveRDS("CHALLENGES/performance_measures_files/gbm_tuned.rds")
+```
+
+```{r}
+#| eval: true
+#| message: false
+gbm_untuned <- readRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/gbm_untuned.rds")
+gbm_tuned <- readRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/gbm_tuned.rds")
+
+# Before tuning:
+gbm_untuned
+
+# After tuning:
+gbm_tuned
+```
+
+# Trade-off between precision and recall with optimal threshold
+This type of plot shows us the optimal balance of precision and recall defined by a threshold. Generally speaking, we compare false positives (precision) to false negatives (recall) with `1` being the ideal (no incorrect classifications). Since we can not have the best of both worlds, we need to find a good balance, hence the threshold. However this is not the best answer since false negatives are usually more costly for the business case.
+```{r}
+#| eval: false
+
+# 3 Trade-off between precision and recall with optimal threshold ----
+
+# Lets load 3 different models for future plots
+gbm_h2o <- automl_models_h2o@leaderboard %>% 
+  extract_h2o_model_name_by_position(6) %>% 
+  h2o.getModel()
+
+stacked_ensemble_h2o <- automl_models_h2o@leaderboard %>% 
+  extract_h2o_model_name_by_position(1) %>% 
+  h2o.getModel()
+
+xrt_h2o <- automl_models_h2o@leaderboard %>% 
+  extract_h2o_model_name_by_position(13) %>% 
+  h2o.getModel()
+
+# Save for later plots
+gbm_h2o %>% h2o.saveModel("CHALLENGES/performance_measures_files/models/")
+stacked_ensemble_h2o %>% h2o.saveModel("CHALLENGES/performance_measures_files/models/")
+xrt_h2o %>% h2o.saveModel("CHALLENGES/performance_measures_files/models/")
+
+performance_h2o <- h2o.performance(stacked_ensemble_h2o, newdata = as.h2o(test_tbl))
+
+performance_tbl <- performance_h2o %>%
+  h2o.metric() %>%
+  as.tibble() 
+
+# Save this theme for later plots
+theme_new <- theme(
+  legend.position  = "bottom",
+  legend.key       = element_blank(),
+  panel.background = element_rect(fill   = "transparent"),
+  panel.border     = element_rect(color = "black", fill = NA, size = 0.5),
+  panel.grid.major = element_line(color = "grey", size = 0.333)
+) 
+
+performance_tbl %>%
+  ggplot(aes(x = threshold)) +
+  geom_line(aes(y = precision), color = "blue", size = 1) +
+  geom_line(aes(y = recall), color = "red", size = 1) +
+  
+  # Insert line where precision and recall are harmonically optimized
+  geom_vline(xintercept = h2o.find_threshold_by_max_metric(performance_h2o, "f1")) +
+  labs(title = "Precision vs Recall", y = "value") +
+  theme_new
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot2.png", width = 25, height = 15, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot2.png")
+```
+
+# ROC Plot
+The ROC curve puts true positives against false positives, which can give us a good first impression about the performance of the model.
+```{r}
+#| eval: false
+
+# 4 ROC Plot ----
+
+path <- "CHALLENGES/performance_measures_files/models/GBM_4_AutoML_3_20240616_180904"
+
+load_model_performance_metrics <- function(path, test_tbl) {
+  
+  model_h2o <- h2o.loadModel(path)
+  perf_h2o  <- h2o.performance(model_h2o, newdata = as.h2o(test_tbl)) 
+  
+  perf_h2o %>%
+    h2o.metric() %>%
+    as_tibble() %>%
+    mutate(auc = h2o.auc(perf_h2o)) %>%
+    select(tpr, fpr, auc)
+  
+}
+
+model_metrics_tbl <- fs::dir_info(path = "CHALLENGES/performance_measures_files/models/") %>%
+  select(path) %>%
+  mutate(metrics = map(path, load_model_performance_metrics, test_tbl)) %>%
+  unnest(cols = metrics)
+
+model_metrics_tbl %>%
+  mutate(
+    # Extract the model names
+    path = str_split(path, pattern = "/", simplify = T)[,4] %>% as_factor(),
+    auc  = auc %>% round(3) %>% as.character() %>% as_factor()
+  ) %>%
+  ggplot(aes(fpr, tpr, color = path, linetype = auc)) +
+  geom_line(size = 1) +
+  
+  # just for demonstration purposes
+  geom_abline(color = "red", linetype = "dotted") +
+  
+  theme_new +
+  theme(
+    legend.direction = "vertical",
+  ) +
+  labs(
+    title = "ROC Plot",
+    subtitle = "Performance of 3 Top Performing Models for each Algorithm"
+  )
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot3.png", width = 25, height = 18, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot3.png")
+```
+
+# Precision vs. Recall Plot
+To visualize the tradeoff between precision and recall, this plot shows how increasing one metric influences the other. Again, it's up to the user to make the appropriate decision.
+```{r}
+#| eval: false
+
+# 5 Precision vs. Recall Plot ----
+
+load_model_performance_metrics <- function(path, test_tbl) {
+  
+  model_h2o <- h2o.loadModel(path)
+  perf_h2o  <- h2o.performance(model_h2o, newdata = as.h2o(test_tbl)) 
+  
+  perf_h2o %>%
+    h2o.metric() %>%
+    as_tibble() %>%
+    mutate(auc = h2o.auc(perf_h2o)) %>%
+    select(tpr, fpr, auc, precision, recall)
+  
+}
+
+model_metrics_tbl <- fs::dir_info(path = "CHALLENGES/performance_measures_files/models/") %>%
+  select(path) %>%
+  mutate(metrics = map(path, load_model_performance_metrics, test_tbl)) %>%
+  unnest(cols = metrics)
+
+model_metrics_tbl %>%
+  mutate(
+    path = str_split(path, pattern = "/", simplify = T)[,4] %>% as_factor(),
+    auc  = auc %>% round(3) %>% as.character() %>% as_factor()
+  ) %>%
+  ggplot(aes(recall, precision, color = path, linetype = auc)) +
+  geom_line(size = 1) +
+  theme_new + 
+  theme(
+    legend.direction = "vertical",
+  ) +
+  labs(
+    title = "Precision vs Recall Plot",
+    subtitle = "Performance of 3 Top Performing Models for each Algorithm"
+  )
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot4.png", width = 25, height = 18, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot4.png")
+```
+
+# Gain Plot
+The gain helps us to understand the overall benefit of using models over random choices when making predictions. Assume we have computed a decent model and we determined for a set of values their probabilities (in this case, whether a product will be on backorder or not). Then for the highest probability groups (whatever size they may be) we **gain** the ability to correctly predict the outcome using our model.
+```{r}
+#| eval: false
+
+# 6 Gain Plot ----
+
+gain_lift_tbl <- performance_h2o %>%
+  h2o.gainsLift() %>%
+  as.tibble()
+
+gain_transformed_tbl <- gain_lift_tbl %>% 
+  select(group, cumulative_data_fraction, cumulative_capture_rate, cumulative_lift) %>%
+  select(-contains("lift")) %>%
+  mutate(baseline = cumulative_data_fraction) %>%
+  rename(gain     = cumulative_capture_rate) %>%
+  # prepare the data for the plotting (for the color and group aesthetics)
+  pivot_longer(cols = c(gain, baseline), values_to = "value", names_to = "key")
+
+gain_transformed_tbl %>%
+  ggplot(aes(x = cumulative_data_fraction, y = value, color = key)) +
+  geom_line(size = 1.5) +
+  labs(
+    title = "Gain Chart",
+    x = "Cumulative Data Fraction",
+    y = "Gain"
+  ) +
+  theme_new
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot5.png", width = 25, height = 20, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot5.png")
+```
+
+# Lift Plot
+Closely related to the gain, the lift tells us how many times better our model is over randomly predicting the outcome. This metric is given by the respective gain divided by the expectation.
+```{r}
+#| eval: false
+
+# 7 Lift Plot ----
+
+lift_transformed_tbl <- gain_lift_tbl %>% 
+  select(group, cumulative_data_fraction, cumulative_capture_rate, cumulative_lift) %>%
+  select(-contains("capture")) %>%
+  mutate(baseline = 1) %>%
+  rename(lift = cumulative_lift) %>%
+  pivot_longer(cols = c(lift, baseline), values_to = "value", names_to = "key")
+
+lift_transformed_tbl %>%
+  ggplot(aes(x = cumulative_data_fraction, y = value, color = key)) +
+  geom_line(size = 1.5) +
+  labs(
+    title = "Lift Chart",
+    x = "Cumulative Data Fraction",
+    y = "Lift"
+  ) +
+  theme_new
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot6.png", width = 25, height = 20, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot6.png")
+```
+
+# Dashboard with cowplot
+The cowplot package can help us put all the above plots into a bigger summed up picture. Having all different aspects and plots of models shown at once, it is easier to come to a conclusion which model shall be finally used for the specific business case.
+```{r}
+#| eval: false
+
+# 8 Dashboard with cowplot ----
+
+# Calculate and arrange all previous plots in one big plot
+plot_h2o_performance <- function(h2o_leaderboard, newdata, order_by = c("auc", "logloss"),
+                                 max_models = 3, size = 1.5) {
+  
+  # Inputs
+  
+  leaderboard_tbl <- h2o_leaderboard %>%
+    as_tibble() %>%
+    slice(1:max_models)
+  
+  newdata_tbl <- newdata %>%
+    as_tibble()
+  
+  # Selecting the first, if nothing is provided
+  order_by      <- tolower(order_by[[1]]) 
+  
+  # Convert string stored in a variable to column name (symbol)
+  order_by_expr <- rlang::sym(order_by)
+  
+  # Turn of the progress bars ( opposite h2o.show_progress())
+  h2o.no_progress()
+  
+  # 1. Model metrics
+  
+  get_model_performance_metrics <- function(model_id, test_tbl) {
+    
+    model_h2o <- h2o.getModel(model_id)
+    perf_h2o  <- h2o.performance(model_h2o, newdata = as.h2o(test_tbl))
+    
+    perf_h2o %>%
+      h2o.metric() %>%
+      as.tibble() %>%
+      select(threshold, tpr, fpr, precision, recall)
+    
+  }
+  
+  model_metrics_tbl <- leaderboard_tbl %>%
+    mutate(metrics = map(model_id, get_model_performance_metrics, newdata_tbl)) %>%
+    unnest(cols = metrics) %>%
+    mutate(
+      model_id = as_factor(model_id) %>% 
+        # programmatically reorder factors depending on order_by
+        fct_reorder(!! order_by_expr, 
+                    .desc = ifelse(order_by == "auc", TRUE, FALSE)),
+      auc      = auc %>% 
+        round(3) %>% 
+        as.character() %>% 
+        as_factor() %>% 
+        fct_reorder(as.numeric(model_id)),
+      logloss  = logloss %>% 
+        round(4) %>% 
+        as.character() %>% 
+        as_factor() %>% 
+        fct_reorder(as.numeric(model_id))
+    )
+  
+  
+  # 1A. ROC Plot
+  
+  p1 <- model_metrics_tbl %>%
+    ggplot(aes(fpr, tpr, color = model_id, linetype = !! order_by_expr)) +
+    geom_line(size = size) +
+    theme_new +
+    labs(title = "ROC", x = "FPR", y = "TPR") +
+    theme(legend.direction = "vertical") 
+  
+  
+  # 1B. Precision vs Recall
+  
+  p2 <- model_metrics_tbl %>%
+    ggplot(aes(recall, precision, color = model_id, linetype = !! order_by_expr)) +
+    geom_line(size = size) +
+    theme_new +
+    labs(title = "Precision Vs Recall", x = "Recall", y = "Precision") +
+    theme(legend.position = "none") 
+  
+  
+  # 2. Gain / Lift
+  
+  get_gain_lift <- function(model_id, test_tbl) {
+    
+    model_h2o <- h2o.getModel(model_id)
+    perf_h2o  <- h2o.performance(model_h2o, newdata = as.h2o(test_tbl)) 
+    
+    perf_h2o %>%
+      h2o.gainsLift() %>%
+      as.tibble() %>%
+      select(group, cumulative_data_fraction, cumulative_capture_rate, cumulative_lift)
+    
+  }
+  
+  gain_lift_tbl <- leaderboard_tbl %>%
+    mutate(metrics = map(model_id, get_gain_lift, newdata_tbl)) %>%
+    unnest(cols = metrics) %>%
+    mutate(
+      model_id = as_factor(model_id) %>% 
+        fct_reorder(!! order_by_expr, 
+                    .desc = ifelse(order_by == "auc", TRUE, FALSE)),
+      auc  = auc %>% 
+        round(3) %>% 
+        as.character() %>% 
+        as_factor() %>% 
+        fct_reorder(as.numeric(model_id)),
+      logloss = logloss %>% 
+        round(4) %>% 
+        as.character() %>% 
+        as_factor() %>% 
+        fct_reorder(as.numeric(model_id))
+    ) %>%
+    rename(
+      gain = cumulative_capture_rate,
+      lift = cumulative_lift
+    ) 
+  
+  # 2A. Gain Plot
+  
+  p3 <- gain_lift_tbl %>%
+    ggplot(aes(cumulative_data_fraction, gain, 
+               color = model_id, linetype = !! order_by_expr)) +
+    geom_line(size = size,) +
+    geom_segment(x = 0, y = 0, xend = 1, yend = 1, 
+                 color = "red", size = size, linetype = "dotted") +
+    theme_new +
+    expand_limits(x = c(0, 1), y = c(0, 1)) +
+    labs(title = "Gain",
+         x = "Cumulative Data Fraction", y = "Gain") +
+    theme(legend.position = "none")
+  
+  # 2B. Lift Plot
+  
+  p4 <- gain_lift_tbl %>%
+    ggplot(aes(cumulative_data_fraction, lift, 
+               color = model_id, linetype = !! order_by_expr)) +
+    geom_line(size = size) +
+    geom_segment(x = 0, y = 1, xend = 1, yend = 1, 
+                 color = "red", size = size, linetype = "dotted") +
+    theme_new +
+    expand_limits(x = c(0, 1), y = c(0, 1)) +
+    labs(title = "Lift",
+         x = "Cumulative Data Fraction", y = "Lift") +
+    theme(legend.position = "none") 
+  
+  
+  # Combine using cowplot
+  
+  # Original code does not plot the legend at all
+  # Need to fix the given code, have to extract legend correctly
+  # First extract all components and then combine them
+  
+  # Extract all legend components
+  legends <- cowplot::get_plot_component(p1, "guide-box", return_all = TRUE)
+  
+  # Combine legends if there are multiple
+  p_legend <- cowplot::plot_grid(plotlist = legends, ncol = 1)
+
+  # Remove legend from p1
+  p1 <- p1 + theme(legend.position = "none")
+  
+  # cowplot::plt_grid() combines multiple ggplots into a single cowplot object
+  p <- cowplot::plot_grid(p1, p2, p3, p4, ncol = 2)
+  
+  # cowplot::ggdraw() sets up a drawing layer
+  p_title <- ggdraw() + 
+    
+    # cowplot::draw_label() draws text on a ggdraw layer / ggplot object
+    draw_label("H2O Model Metrics", size = 18, fontface = "bold", 
+               color = "#2C3E50")
+  
+  p_subtitle <- ggdraw() + 
+    draw_label(glue("Ordered by {toupper(order_by)}"), size = 10,  
+               color = "#2C3E50")
+  
+  # Combine everything
+  ret <- plot_grid(p_title, p_subtitle, p, p_legend, 
+                   
+                   # Adjust the relative spacing, so that the legends always fits
+                   ncol = 1, rel_heights = c(0.05, 0.05, 1, 0.05 * max_models))
+  
+  h2o.show_progress()
+  
+  return(ret)
+  
+}
+
+automl_models_h2o@leaderboard %>%
+  plot_h2o_performance(newdata = test_tbl, order_by = "logloss", 
+                       size = 0.5, max_models = 4)
+
+# Save plot for journal
+ggsave("CHALLENGES/performance_measures_files/plot7.png", width = 25, height = 25, units = "cm")
+```
+
+```{r}
+#| eval: true
+#| message: false
+#| echo: false
+
+knitr::include_graphics("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/performance_measures_files/plot7.png")
+```

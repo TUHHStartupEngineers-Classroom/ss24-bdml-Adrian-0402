@@ -58,7 +58,7 @@ automl_models_h2o <- h2o.automl(
   training_frame    = train_h2o,
   validation_frame  = valid_h2o,
   leaderboard_frame = test_h2o,
-  max_runtime_secs  = 60,
+  max_runtime_secs  = 30,
   nfolds            = 5 
 )
 
@@ -67,8 +67,11 @@ automl_models_h2o <- h2o.automl(
 # Check results
 automl_models_h2o@leaderboard
 
-automl_models_h2o@leaderboard %>% as_tibble() %>% 
-  saveRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/leaderboard_tbl.rds")
+# Save the table for journal (I already ran it once, we don't need to overwrite
+# the files every time we externally call this script during the next challenge)
+# automl_models_h2o@leaderboard %>%
+#  as_tibble() %>% 
+#   saveRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/automated_ml_II_files/leaderboard_tbl.rds")
 
 extract_h2o_model_name_by_position <- function(h2o_leaderboard, n = 1, verbose = T) {
   
@@ -92,8 +95,10 @@ leader_model_h2o <- automl_models_h2o@leaderboard %>%
 predictions_tbl <- h2o.predict(leader_model_h2o, newdata = test_h2o) %>% 
   as_tibble()
 
-predictions_tbl %>%  
-  saveRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/predictions_tbl.rds")
+# Save the table for journal (I already ran it once, we don't need to overwrite
+# the files every time we externally call this script during the next challenge)
+# predictions_tbl %>%  
+#   saveRDS("~/GitHub/ss24-bdml-Adrian-0402/CHALLENGES/automated_ml_II_files/predictions_tbl.rds")
 
 # Prediction results
 predictions_tbl
@@ -104,4 +109,4 @@ predictions_tbl
 # already exists.
 
 leader_model_h2o %>% 
-  h2o.saveModel(path = "CHALLENGES/")
+  h2o.saveModel(path = "CHALLENGES/automated_ml_II_files/")
