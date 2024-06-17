@@ -3,6 +3,8 @@ title: "Automated Machine Learning with H2O (II)"
 author: "Adrian Florea"
 ---
 
+# Challenge 4: Using AutoML with the Product Backorders Dataset
+
 The journal qmd file has issues with running h2o in its entirety. Therefore the results are imported and shown here. For the full computation steps, refer to the corresponding `.R` file `automated_ml_II_CHALLENGE.R` located in folder `...\CHALLENGES`.
 
 ```{r}

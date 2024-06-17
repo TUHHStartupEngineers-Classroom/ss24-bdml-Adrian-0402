@@ -164,14 +164,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
    
   <ul class="collapse">
-<li><a href="#leaderboard-visualization" id="toc-leaderboard-visualization" class="nav-link active" data-scroll-target="#leaderboard-visualization"><span class="header-section-number">1</span> Leaderboard visualization</a></li>
-  <li><a href="#tuning-a-model-with-grid-search" id="toc-tuning-a-model-with-grid-search" class="nav-link" data-scroll-target="#tuning-a-model-with-grid-search"><span class="header-section-number">2</span> Tuning a model with grid search</a></li>
-  <li><a href="#trade-off-between-precision-and-recall-with-optimal-threshold" id="toc-trade-off-between-precision-and-recall-with-optimal-threshold" class="nav-link" data-scroll-target="#trade-off-between-precision-and-recall-with-optimal-threshold"><span class="header-section-number">3</span> Trade-off between precision and recall with optimal threshold</a></li>
-  <li><a href="#roc-plot" id="toc-roc-plot" class="nav-link" data-scroll-target="#roc-plot"><span class="header-section-number">4</span> ROC Plot</a></li>
-  <li><a href="#precision-vs.-recall-plot" id="toc-precision-vs.-recall-plot" class="nav-link" data-scroll-target="#precision-vs.-recall-plot"><span class="header-section-number">5</span> Precision vs.&nbsp;Recall Plot</a></li>
-  <li><a href="#gain-plot" id="toc-gain-plot" class="nav-link" data-scroll-target="#gain-plot"><span class="header-section-number">6</span> Gain Plot</a></li>
-  <li><a href="#lift-plot" id="toc-lift-plot" class="nav-link" data-scroll-target="#lift-plot"><span class="header-section-number">7</span> Lift Plot</a></li>
-  <li><a href="#dashboard-with-cowplot" id="toc-dashboard-with-cowplot" class="nav-link" data-scroll-target="#dashboard-with-cowplot"><span class="header-section-number">8</span> Dashboard with cowplot</a></li>
+<li><a href="#challenge-5-visualizations-for-product-backorders-dataset-after-automl" id="toc-challenge-5-visualizations-for-product-backorders-dataset-after-automl" class="nav-link active" data-scroll-target="#challenge-5-visualizations-for-product-backorders-dataset-after-automl"><span class="header-section-number">1</span> Challenge 5: Visualizations for Product Backorders Dataset after AutoML</a></li>
+  <li><a href="#leaderboard-visualization" id="toc-leaderboard-visualization" class="nav-link" data-scroll-target="#leaderboard-visualization"><span class="header-section-number">2</span> Leaderboard visualization</a></li>
+  <li><a href="#tuning-a-model-with-grid-search" id="toc-tuning-a-model-with-grid-search" class="nav-link" data-scroll-target="#tuning-a-model-with-grid-search"><span class="header-section-number">3</span> Tuning a model with grid search</a></li>
+  <li><a href="#trade-off-between-precision-and-recall-with-optimal-threshold" id="toc-trade-off-between-precision-and-recall-with-optimal-threshold" class="nav-link" data-scroll-target="#trade-off-between-precision-and-recall-with-optimal-threshold"><span class="header-section-number">4</span> Trade-off between precision and recall with optimal threshold</a></li>
+  <li><a href="#roc-plot" id="toc-roc-plot" class="nav-link" data-scroll-target="#roc-plot"><span class="header-section-number">5</span> ROC Plot</a></li>
+  <li><a href="#precision-vs.-recall-plot" id="toc-precision-vs.-recall-plot" class="nav-link" data-scroll-target="#precision-vs.-recall-plot"><span class="header-section-number">6</span> Precision vs.&nbsp;Recall Plot</a></li>
+  <li><a href="#gain-plot" id="toc-gain-plot" class="nav-link" data-scroll-target="#gain-plot"><span class="header-section-number">7</span> Gain Plot</a></li>
+  <li><a href="#lift-plot" id="toc-lift-plot" class="nav-link" data-scroll-target="#lift-plot"><span class="header-section-number">8</span> Lift Plot</a></li>
+  <li><a href="#dashboard-with-cowplot" id="toc-dashboard-with-cowplot" class="nav-link" data-scroll-target="#dashboard-with-cowplot"><span class="header-section-number">9</span> Dashboard with cowplot</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -195,9 +196,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><p>For the same reason as in the previous challenge, to prevent issues, the code here is not run directly. The resulting plots are imported. Once again, for the full computation steps, refer to the corresponding <code>.R</code> file <code>performance_measures_CHALLENGE.R</code> located in folder <code>...\CHALLENGES</code>.</p>
-<section id="leaderboard-visualization" class="level1" data-number="1"><h1 data-number="1">
-<span class="header-section-number">1</span> Leaderboard visualization</h1>
+</header><section id="challenge-5-visualizations-for-product-backorders-dataset-after-automl" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Challenge 5: Visualizations for Product Backorders Dataset after AutoML</h1>
+<p>For the same reason as in the previous challenge, to prevent issues, the code here is not run directly. The resulting plots are imported. Once again, for the full computation steps, refer to the corresponding <code>.R</code> file <code>performance_measures_CHALLENGE.R</code> located in folder <code>...\CHALLENGES</code>.</p>
+</section><section id="leaderboard-visualization" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Leaderboard visualization</h1>
 <p>A broad overview of the top 15 computed models. The results look already highly accurate, which might be because of a more powerful system on my side. We can see that stacked ensemble algorithms are the best performing ones.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-1_df9738e24a9f4513fb0d5c02af1e8935">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(h2o)</span>
@@ -295,8 +298,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="tuning-a-model-with-grid-search" class="level1" data-number="2"><h1 data-number="2">
-<span class="header-section-number">2</span> Tuning a model with grid search</h1>
+</section><section id="tuning-a-model-with-grid-search" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Tuning a model with grid search</h1>
 <p>If one wants to improve their models, the easiest way is to just allow more computing time. However, it is also possible to fine tune a model by making a “grid” of various parameter combinations that are used to constrain the model during training. In this case, we can use a small amount of so called hyperparameters to squeeze out a bit more performance out of our model.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-3_40dd9c3d9b77a83aa7c7e5cee764073f">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 2 Tune a model with grid search ----</span></span>
@@ -386,8 +389,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="trade-off-between-precision-and-recall-with-optimal-threshold" class="level1" data-number="3"><h1 data-number="3">
-<span class="header-section-number">3</span> Trade-off between precision and recall with optimal threshold</h1>
+</section><section id="trade-off-between-precision-and-recall-with-optimal-threshold" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Trade-off between precision and recall with optimal threshold</h1>
 <p>This type of plot shows us the optimal balance of precision and recall defined by a threshold. Generally speaking, we compare false positives (precision) to false negatives (recall) with <code>1</code> being the ideal (no incorrect classifications). Since we can not have the best of both worlds, we need to find a good balance, hence the threshold. However this is not the best answer since false negatives are usually more costly for the business case.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-5_cab7599da343eed34742f143e13c0f6b">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># 3 Trade-off between precision and recall with optimal threshold ----</span></span>
@@ -446,8 +449,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="roc-plot" class="level1" data-number="4"><h1 data-number="4">
-<span class="header-section-number">4</span> ROC Plot</h1>
+</section><section id="roc-plot" class="level1" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> ROC Plot</h1>
 <p>The ROC curve puts true positives against false positives, which can give us a good first impression about the performance of the model.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-7_768a2a9f10aea35f1e21b6b445136030">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># 4 ROC Plot ----</span></span>
@@ -504,8 +507,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="precision-vs.-recall-plot" class="level1" data-number="5"><h1 data-number="5">
-<span class="header-section-number">5</span> Precision vs.&nbsp;Recall Plot</h1>
+</section><section id="precision-vs.-recall-plot" class="level1" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> Precision vs.&nbsp;Recall Plot</h1>
 <p>To visualize the tradeoff between precision and recall, this plot shows how increasing one metric influences the other. Again, it’s up to the user to make the appropriate decision.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-9_1f81867cf96351a93b3273658d4391ec">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># 5 Precision vs. Recall Plot ----</span></span>
@@ -555,8 +558,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="gain-plot" class="level1" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> Gain Plot</h1>
+</section><section id="gain-plot" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> Gain Plot</h1>
 <p>The gain helps us to understand the overall benefit of using models over random choices when making predictions. Assume we have computed a decent model and we determined for a set of values their probabilities (in this case, whether a product will be on backorder or not). Then for the highest probability groups (whatever size they may be) we <strong>gain</strong> the ability to correctly predict the outcome using our model.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-11_e809d4f3c204f6c225c24afb0e3e2b95">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># 6 Gain Plot ----</span></span>
@@ -594,8 +597,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="lift-plot" class="level1" data-number="7"><h1 data-number="7">
-<span class="header-section-number">7</span> Lift Plot</h1>
+</section><section id="lift-plot" class="level1" data-number="8"><h1 data-number="8">
+<span class="header-section-number">8</span> Lift Plot</h1>
 <p>Closely related to the gain, the lift tells us how many times better our model is over randomly predicting the outcome. This metric is given by the respective gain divided by the expectation.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-13_aa5d86da17db682a8593bee01f57f634">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># 7 Lift Plot ----</span></span>
@@ -628,8 +631,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="dashboard-with-cowplot" class="level1" data-number="8"><h1 data-number="8">
-<span class="header-section-number">8</span> Dashboard with cowplot</h1>
+</section><section id="dashboard-with-cowplot" class="level1" data-number="9"><h1 data-number="9">
+<span class="header-section-number">9</span> Dashboard with cowplot</h1>
 <p>The cowplot package can help us put all the above plots into a bigger summed up picture. Having all different aspects and plots of models shown at once, it is easier to come to a conclusion which model shall be finally used for the specific business case.</p>
 <div class="cell" data-hash="04_performance_measures_cache/html/unnamed-chunk-15_49a5daab4b005895dc6ae67c2db95d80">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># 8 Dashboard with cowplot ----</span></span>
@@ -1184,7 +1187,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":true,"descPosition":"bottom","selector":".lightbox","closeEffect":"zoom","openEffect":"zoom"});</script>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","loop":true,"selector":".lightbox","descPosition":"bottom"});</script>
 
 
 </body></html>
