@@ -3,6 +3,4 @@ title: "05 Explaining Black-Box Models With LIME"
 author: "Adrian Florea"
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+# Challenge 6: Test
