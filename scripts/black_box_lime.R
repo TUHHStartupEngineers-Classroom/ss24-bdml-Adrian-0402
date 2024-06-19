@@ -1,18 +1,3 @@
----
-title: "05 Explaining Black-Box Models With LIME"
-author: "Adrian Florea"
----
-
-# Challenge 6: Recreate plots for single and multiple cases
-This time we can use h2o directly, however don't mind the printed output that it produces. Putting `h2o.init()` in a separate chunk to suppress messages won't work. The original explanation plot is also shown for comparison.
-
-## Part 1: Recreate `plot_features()`
-
-```{r}
-#| eval: true
-#| message: false
-#| warning: false
-
 # LIME FEATURE EXPLANATION ----
 
 # 1. Setup ----
@@ -26,7 +11,6 @@ library(tidyverse)
 library(tidyquant)
 library(lime)
 library(rsample)
-library(glue)
 
 # Processing Pipeline
 process_hr_data_readable <- function(data, definitions_tbl) {
@@ -121,7 +105,7 @@ explainer <- train_tbl %>%
   )
 
 explanation <- test_tbl %>%
-  slice(1:20) %>%
+  slice(1) %>%
   select(-Attrition) %>%
   lime::explain(
     
@@ -137,80 +121,29 @@ explanation <- test_tbl %>%
     kernel_width   = 0.5
   )
 
-explanation %>% 
-  as.tibble()
+explanation %>%
+  as_tibble() %>%
+  select(feature:prediction)
 
-case_1 <- explanation %>%
-  filter(case == 1)
-
-# Recreate plot_features()
-g <- plot_features(explanation = case_1, ncol = 1)
-
-# Create text for label
-case_1 <- case_1 %>% 
-  mutate(subtitle_text = glue("Case: {case}\nLabel: {label}\nProbability: {round(label_prob, 2)}\nExplanation Fit: {round(model_r2, 2)}")) 
-
-# Recreated plot
-case_1 %>% 
-  arrange(abs(feature_weight)) %>%
-  mutate(feature_desc = as_factor(feature_desc)) %>%
-  mutate(sign = ifelse(feature_weight >= 0, "Supports", "Contradicts")) %>%
-  
-  ggplot(aes(feature_weight, feature_desc)) +
-  geom_col(aes(fill = sign)) +
-  scale_fill_manual(values = c("#c40d00", "#000875")) +
-  
-  theme_minimal() +
-  theme(
-    legend.position = "bottom",
-    legend.title = element_blank()
-  ) +
-  
-  labs(
-    x = "Weight",
-    y = "Feature",
-    subtitle = case_1$subtitle_text
-  )
-
-# Original plot
-g
-```
-
-## Part 2: Recreate `plot_explanations()`
-
-```{r}
-#| eval: true
-#| message: false
-#| warning: false
+g <- plot_features(explanation = explanation, ncol = 1)
 
 # 3.3 Multiple Explanations ----
 
-# Recreated plot
-explanation %>% 
-  mutate(case = as_factor(case)) %>% 
-  mutate(feature_desc = factor(feature_desc, levels = feature_desc[order(feature, feature_value)] %>% unique() %>% rev())) %>% 
-  
-  ggplot(aes(case, feature_desc, fill = feature_weight)) +
-  geom_tile() +
-  facet_wrap(~label) +
-  
-  scale_x_discrete("Case", expand = c(0, 0)) +
-  scale_y_discrete("Feature", expand = c(0, 0)) +
-  scale_fill_gradient2(low = "#d43547", mid = "#ffffff", high = "#525cd1") +
-  
-  theme_minimal() +
-  theme(panel.border = element_rect(fill = NA, colour = 'grey20', size = 1),
-        panel.grid = element_blank(),
-        legend.position = "right",
-        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
-        ) +
-  
-  labs(
-    x = "Case",
-    y = "Feature",
-    fill = "Feature\nweight"
+explanation <- test_tbl %>%
+  slice(1:20) %>%
+  select(-Attrition) %>%
+  lime::explain(
+    explainer = explainer,
+    n_labels   = 1,
+    n_features = 8,
+    n_permutations = 5000,
+    kernel_width   = 0.5
   )
 
-# Original plot
+explanation %>%
+  as.tibble()
+
+# Not as good
+plot_features(explanation, ncol = 4)
+
 plot_explanations(explanation)
-```

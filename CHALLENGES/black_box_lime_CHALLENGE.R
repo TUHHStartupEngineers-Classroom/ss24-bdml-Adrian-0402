@@ -1,18 +1,3 @@
----
-title: "05 Explaining Black-Box Models With LIME"
-author: "Adrian Florea"
----
-
-# Challenge 6: Recreate plots for single and multiple cases
-This time we can use h2o directly, however don't mind the printed output that it produces. Putting `h2o.init()` in a separate chunk to suppress messages won't work. The original explanation plot is also shown for comparison.
-
-## Part 1: Recreate `plot_features()`
-
-```{r}
-#| eval: true
-#| message: false
-#| warning: false
-
 # LIME FEATURE EXPLANATION ----
 
 # 1. Setup ----
@@ -174,14 +159,6 @@ case_1 %>%
 
 # Original plot
 g
-```
-
-## Part 2: Recreate `plot_explanations()`
-
-```{r}
-#| eval: true
-#| message: false
-#| warning: false
 
 # 3.3 Multiple Explanations ----
 
@@ -203,7 +180,7 @@ explanation %>%
         panel.grid = element_blank(),
         legend.position = "right",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
-        ) +
+  ) +
   
   labs(
     x = "Case",
@@ -213,4 +190,3 @@ explanation %>%
 
 # Original plot
 plot_explanations(explanation)
-```
