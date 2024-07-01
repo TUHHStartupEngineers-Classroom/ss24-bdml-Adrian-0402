@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Adrian Florea">
+<title>MyLabJournal - Automated Machine Learning with H2O (I)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/icons/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">MyLabJournal</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-journal" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Journal</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-journal">
+<li>
+    <a class="dropdown-item" href="../../content/01_journal/01_supervised_ml_reg2.html" rel="" target="">
+ <span class="dropdown-text">01 Supervised ML - Regression (II)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../content/01_journal/02_automated_ml_1.html" rel="" target="">
+ <span class="dropdown-text">02 Automated Machine Learning with H2O (I)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../content/01_journal/03_automated_ml_2.html" rel="" target="">
+ <span class="dropdown-text">03 Automated Machine Learning with H2O (II)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../content/01_journal/04_performance_measures.html" rel="" target="">
+ <span class="dropdown-text">04 Performance Measures</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../content/01_journal/05_blackbox_lime.html" rel="" target="">
+ <span class="dropdown-text">05 Explaining Black-Box Models With LIME</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../content/02_notes/05_class_notes.html" rel="" target="">
+ <span class="menu-text">Class notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../content/03_other/06_links.html" rel="" target="">
+ <span class="menu-text">Links</span></a>
+  </li>  
+</ul>
+<div class="quarto-navbar-tools ms-auto">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
+   
+  <ul class="collapse">
+<li>
+<a href="#challenge-3---investigate-features-and-answer-questions" id="toc-challenge-3---investigate-features-and-answer-questions" class="nav-link active" data-scroll-target="#challenge-3---investigate-features-and-answer-questions"><span class="header-section-number">1</span> Challenge 3 - Investigate features and answer questions</a>
+  <ul class="collapse">
+<li><a href="#prepare-data-and-functions" id="toc-prepare-data-and-functions" class="nav-link" data-scroll-target="#prepare-data-and-functions"><span class="header-section-number">1.1</span> Prepare data and functions</a></li>
+  <li><a href="#question-1" id="toc-question-1" class="nav-link" data-scroll-target="#question-1"><span class="header-section-number">1.2</span> Question 1:</a></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2"><span class="header-section-number">1.3</span> Question 2:</a></li>
+  <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3"><span class="header-section-number">1.4</span> Question 3:</a></li>
+  <li><a href="#question-4" id="toc-question-4" class="nav-link" data-scroll-target="#question-4"><span class="header-section-number">1.5</span> Question 4:</a></li>
+  <li><a href="#question-5" id="toc-question-5" class="nav-link" data-scroll-target="#question-5"><span class="header-section-number">1.6</span> Question 5:</a></li>
+  <li><a href="#question-6" id="toc-question-6" class="nav-link" data-scroll-target="#question-6"><span class="header-section-number">1.7</span> Question 6:</a></li>
+  <li><a href="#question-7" id="toc-question-7" class="nav-link" data-scroll-target="#question-7"><span class="header-section-number">1.8</span> Question 7:</a></li>
+  <li><a href="#question-8" id="toc-question-8" class="nav-link" data-scroll-target="#question-8"><span class="header-section-number">1.9</span> Question 8:</a></li>
+  <li><a href="#question-9" id="toc-question-9" class="nav-link" data-scroll-target="#question-9"><span class="header-section-number">1.10</span> Question 9:</a></li>
+  <li><a href="#question-10" id="toc-question-10" class="nav-link" data-scroll-target="#question-10"><span class="header-section-number">1.11</span> Question 10:</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Automated Machine Learning with H2O (I)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Adrian Florea </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header><section id="challenge-3---investigate-features-and-answer-questions" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Challenge 3 - Investigate features and answer questions</h1>
+<section id="prepare-data-and-functions" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="prepare-data-and-functions">
+<span class="header-section-number">1.1</span> Prepare data and functions</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-1_857fcfb6a1f01f2c5483a23ad83fcdd5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Libraries </span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Load Data data definitions</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>path_data_definitions <span class="ot">&lt;-</span> <span class="st">"~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/data_definitions.xlsx"</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>definitions_raw_tbl   <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(path_data_definitions, <span class="at">sheet =</span> <span class="dv">1</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>employee_attrition_tbl <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"~/GitHub/ss24-bdml-Adrian-0402/source_data/automated/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co"># Step 1: Data Summarization -----</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co"># skim(employee_attrition_tbl)</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># We had a look at this before</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co"># Step 2: Data Visualization ----</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co"># Helper function</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a>count_to_pct <span class="ot">&lt;-</span> <span class="cf">function</span>(data, ..., <span class="at">col =</span> n) {</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  </span>
+<span id="cb1-24"><a href="#cb1-24"></a>  <span class="co"># capture the dots</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a>  grouping_vars_expr <span class="ot">&lt;-</span> <span class="fu">quos</span>(...)</span>
+<span id="cb1-26"><a href="#cb1-26"></a>  col_expr <span class="ot">&lt;-</span> <span class="fu">enquo</span>(col)</span>
+<span id="cb1-27"><a href="#cb1-27"></a>  </span>
+<span id="cb1-28"><a href="#cb1-28"></a>  ret <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a>    <span class="fu">group_by</span>(<span class="sc">!!!</span> grouping_vars_expr) <span class="sc">%&gt;%</span></span>
+<span id="cb1-30"><a href="#cb1-30"></a>    <span class="fu">mutate</span>(<span class="at">pct =</span> (<span class="sc">!!</span> col_expr) <span class="sc">/</span> <span class="fu">sum</span>(<span class="sc">!!</span> col_expr)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb1-32"><a href="#cb1-32"></a>  </span>
+<span id="cb1-33"><a href="#cb1-33"></a>  <span class="fu">return</span>(ret)</span>
+<span id="cb1-34"><a href="#cb1-34"></a>  </span>
+<span id="cb1-35"><a href="#cb1-35"></a>}</span>
+<span id="cb1-36"><a href="#cb1-36"></a></span>
+<span id="cb1-37"><a href="#cb1-37"></a><span class="co"># Plot function</span></span>
+<span id="cb1-38"><a href="#cb1-38"></a>plot_ggpairs <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">color =</span> <span class="cn">NULL</span>, <span class="at">density_alpha =</span> <span class="fl">0.5</span>) {</span>
+<span id="cb1-39"><a href="#cb1-39"></a>  </span>
+<span id="cb1-40"><a href="#cb1-40"></a>  color_expr <span class="ot">&lt;-</span> <span class="fu">enquo</span>(color)</span>
+<span id="cb1-41"><a href="#cb1-41"></a>  </span>
+<span id="cb1-42"><a href="#cb1-42"></a>  <span class="cf">if</span> (rlang<span class="sc">::</span><span class="fu">quo_is_null</span>(color_expr)) {</span>
+<span id="cb1-43"><a href="#cb1-43"></a>    </span>
+<span id="cb1-44"><a href="#cb1-44"></a>    g <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-45"><a href="#cb1-45"></a>      <span class="fu">ggpairs</span>(<span class="at">lower =</span> <span class="st">"blank"</span>) </span>
+<span id="cb1-46"><a href="#cb1-46"></a>    </span>
+<span id="cb1-47"><a href="#cb1-47"></a>  } <span class="cf">else</span> {</span>
+<span id="cb1-48"><a href="#cb1-48"></a>    </span>
+<span id="cb1-49"><a href="#cb1-49"></a>    color_name <span class="ot">&lt;-</span> <span class="fu">quo_name</span>(color_expr)</span>
+<span id="cb1-50"><a href="#cb1-50"></a>    </span>
+<span id="cb1-51"><a href="#cb1-51"></a>    g <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-52"><a href="#cb1-52"></a>      <span class="fu">ggpairs</span>(<span class="at">mapping =</span> <span class="fu">aes_string</span>(<span class="at">color =</span> color_name), </span>
+<span id="cb1-53"><a href="#cb1-53"></a>              <span class="at">lower =</span> <span class="st">"blank"</span>, <span class="at">legend =</span> <span class="dv">1</span>,</span>
+<span id="cb1-54"><a href="#cb1-54"></a>              <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"densityDiag"</span>, </span>
+<span id="cb1-55"><a href="#cb1-55"></a>                                            <span class="at">alpha =</span> density_alpha))) <span class="sc">+</span></span>
+<span id="cb1-56"><a href="#cb1-56"></a>      <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb1-57"><a href="#cb1-57"></a>  }</span>
+<span id="cb1-58"><a href="#cb1-58"></a>  </span>
+<span id="cb1-59"><a href="#cb1-59"></a>  <span class="fu">return</span>(g)</span>
+<span id="cb1-60"><a href="#cb1-60"></a>  </span>
+<span id="cb1-61"><a href="#cb1-61"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="question-1" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="question-1">
+<span class="header-section-number">1.2</span> Question 1:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-2_e0f5ec58c33c6bb0e24faaca6d714242">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">select</span>(Attrition,MonthlyIncome) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see a strong peak for “Yes” at lower monthly incomes. Therefore, those that are leaving have a lower monthly income <span style="color:red"><strong>(c)</strong></span>.</p>
+</section><section id="question-2" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="question-2">
+<span class="header-section-number">1.3</span> Question 2:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-3_25dda2bbaf73c6dffce736feb54a1bdc">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">select</span>(Attrition,PercentSalaryHike) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The Boxplot shows very similar median values of the salary hike. The density plot shows us a mostly overlapping behavior with minor differences in the distribution. Thus it is not entirely clear to deduce anything based on just the Percent Salary Hike <span style="color:red"><strong>(d)</strong></span>.</p>
+</section><section id="question-3" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="question-3">
+<span class="header-section-number">1.4</span> Question 3:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-4_da0fb6c25ac31efe5ef82b7343fc4c5c">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">select</span>(Attrition,StockOptionLevel) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can confidently say that the density for higher stock options (1 and 2) is higher for those that are staying (Attrition: “No”). Therefore, those that are staying have a higher stock option level <span style="color:red"><strong>(b)</strong></span>.</p>
+</section><section id="question-4" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="question-4">
+<span class="header-section-number">1.5</span> Question 4:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-5_2eeac721f297b57fff79c73fdd609072">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">select</span>(Attrition,EnvironmentSatisfaction) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>One can see that for higher satisfaction levels, significantly more people are staying. This in turn means, that a higher proportion of those that are leaving have a lower satisfaction level, especially for 1 (=“low”). It is also visible on the boxplot, because for “Yes” attrition, the lower 25% quantile extends to 1. So in summary: A higher proportion of those leaving have a low environment satisfaction level <span style="color:red"><strong>(a)</strong></span>.</p>
+</section><section id="question-5" class="level2" data-number="1.6"><h2 data-number="1.6" class="anchored" data-anchor-id="question-5">
+<span class="header-section-number">1.6</span> Question 5:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-6_7f2bf24ef1cbc99063cc223e81792a99">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">select</span>(Attrition,WorkLifeBalance) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-6-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looking at the densities again, we can see that the 2’s and 3’s of people that are staying are significantly higher <span style="color:red"><strong>(b)</strong></span>.</p>
+</section><section id="question-6" class="level2" data-number="1.7"><h2 data-number="1.7" class="anchored" data-anchor-id="question-6">
+<span class="header-section-number">1.7</span> Question 6:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-7_73bf48bac60ed8f301c10582cad9ea12">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">select</span>(Attrition,JobInvolvement) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The density plot shows, that the 3’s and 4’s are much more present for people that are staying (especially visible for 3’s). In turn this means, that hose that are leaving have a lower density of 3’s and 4’s <span style="color:red"><strong>(a)</strong></span>.</p>
+</section><section id="question-7" class="level2" data-number="1.8"><h2 data-number="1.8" class="anchored" data-anchor-id="question-7">
+<span class="header-section-number">1.8</span> Question 7:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-8_c140b70132e4e99a7848d59c5a3e54a8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">select</span>(Attrition,OverTime) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see that for people who are leaving, the relative proportion compared to those not leaving is higher when looking at those working overtime. The absolute numbers for attrition is almost the same for either working overtime or not. But for people who are staying its visibly lower. We look at it from another perspective by computing concrete numbers:</p>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-9_de2b6909b482c7b0b29716db0320d7c3">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">count</span>(OverTime, Attrition) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">count_to_pct</span>(OverTime)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["OverTime"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Attrition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]},{"label":["pct"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"No","3":"944","4":"0.8956357"},{"1":"No","2":"Yes","3":"110","4":"0.1043643"},{"1":"Yes","2":"No","3":"289","4":"0.6947115"},{"1":"Yes","2":"Yes","3":"127","4":"0.3052885"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>30% of people who are working overtime are leaving. Only 10% of people who are not working overtime are leaving. Or if you change the perspective one more time:</p>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-10_575f4a2e21e413c9234ad8e87e4d1cd4">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">count</span>(Attrition, OverTime) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">count_to_pct</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Attrition"],"name":[1],"type":["chr"],"align":["left"]},{"label":["OverTime"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]},{"label":["pct"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"No","3":"944","4":"0.7656123"},{"1":"No","2":"Yes","3":"289","4":"0.2343877"},{"1":"Yes","2":"No","3":"110","4":"0.4641350"},{"1":"Yes","2":"Yes","3":"127","4":"0.5358650"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>54% of people who are leaving are working overtime. Only 23% who are staying are working overtime.</p>
+<p>Overall you can say generally, that the proportion of those leaving that are working overtime are high compared to those that are not leaving <span style="color:red"><strong>(a)</strong></span>. (Unless you would say that working overtime shall result in more attrition)</p>
+</section><section id="question-8" class="level2" data-number="1.9"><h2 data-number="1.9" class="anchored" data-anchor-id="question-8">
+<span class="header-section-number">1.9</span> Question 8:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-11_01b21fe0590a8df6185c077c498af30f">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">select</span>(Attrition,TrainingTimesLastYear) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-11-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the plot we can see, that for most higher numbers of training times (2, 3, 5 and 6), the density of those staying is significantly higher. In the boxplot we can also see, that the median for leaving is 2, while it is 3 for those who stay. Therefore we can say that people that leave tend to have less annual trainings <span style="color:red"><strong>(b)</strong></span>.</p>
+</section><section id="question-9" class="level2" data-number="1.10"><h2 data-number="1.10" class="anchored" data-anchor-id="question-9">
+<span class="header-section-number">1.10</span> Question 9:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-12_208cafc0b78094b9f2cbab4a2c9351e9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">select</span>(Attrition,YearsAtCompany) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The density plot shows a higher concentration of people who are leaving that have less years at the company (around 0 to 3). After that, people tend to stay more. The boxplot again confirms this, as the quantiles from the people leaving contain lower values. Therefore, people that leave tend to have less working years at the company <span style="color:red"><strong>(b)</strong></span>.</p>
+</section><section id="question-10" class="level2" data-number="1.11"><h2 data-number="1.11" class="anchored" data-anchor-id="question-10">
+<span class="header-section-number">1.11</span> Question 10:</h2>
+<div class="cell" data-hash="02_automated_ml_1_cache/html/unnamed-chunk-13_ead9642617922a4248386ddeb47afde9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>employee_attrition_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">select</span>(Attrition,YearsSinceLastPromotion) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">plot_ggpairs</span>(Attrition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="02_automated_ml_1_files/figure-html/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="02_automated_ml_1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Once again the density plot shows, that a slight but a visible amount of people that are leaving have a higher density for fewer years since their last promotion. However, we have seen before that also more people tend to leave that have fewer working years in general, so they were probably never promoted since they just started. There is some sort of correlation, so based on just this plot we cannot make a clear statement <span style="color:red"><strong>(c)</strong></span>.</p>
+
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'alternate';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","loop":true,"descPosition":"bottom","selector":".lightbox","openEffect":"zoom"});</script>
+
+
+</body></html>
