@@ -1,0 +1,127 @@
+---
+title: "Sales Report"
+author: "Adrian Florea"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+  html_document:
+    code_folding: none
+    df_print: paged
+    highlight: tango
+    number_sections: yes
+    theme: flatly
+    toc: yes
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = TRUE,
+    eval = TRUE,
+    message = FALSE,
+    warning = FALSE,
+    dpi = 300,
+    fig.align = "center"
+    )
+```
+
+```{r, echo=FALSE}
+# Load Libraries
+library(tidyverse)
+library(plotly)
+library(tinytex)
+source("plot_sales.R")
+```
+
+```{r, echo=FALSE}
+# Bike data
+bikes_tbl      <- readRDS("~/GitHub/ss24-bdml-Adrian-0402/source_data/data products/bikes_tbl.rds")
+bikeshops_tbl  <- readRDS("~/GitHub/ss24-bdml-Adrian-0402/source_data/data products/bikeshops_tbl.rds")
+orderlines_tbl <- readRDS("~/GitHub/ss24-bdml-Adrian-0402/source_data/data products/orderlines_tbl.rds")
+
+bike_orderlines_tbl <- orderlines_tbl %>%
+    left_join(bikes_tbl,     by = c("product_id" = "bike_id")) %>%
+    left_join(bikeshops_tbl, by = c("customer_id" = "bikeshop_id")) %>%
+    mutate(total_price = price_euro * quantity)
+```
+
+```{r, echo=FALSE}
+# Category data
+category_2_sales_m_tbl <- bike_orderlines_tbl %>%
+  select(order_date, category_1, category_2, total_price) %>%
+  mutate(date_rounded = floor_date(order_date, unit = "month")) %>%
+  
+  group_by(date_rounded, category_1, category_2) %>%
+  summarise(total_sales = sum(total_price)) %>%
+  ungroup() %>%
+  
+  mutate(label_text = str_glue("Sales: {format_to_euro(total_sales)}
+                                 Date: {date_rounded %>% format('%B %Y')}")) %>%
+  
+  mutate(category_2 = as_factor(category_2) %>%
+           fct_reorder2(date_rounded, total_sales))
+```
+
+# Total Sales Charts {.tabset .tabset-fade .tabset-pills}
+
+## Quaterly Sales Trends
+
+```{r, echo=FALSE, out.height="500px", out.width="100%"}
+plot_total_sales(unit = "quarter", interactive = FALSE)
+```
+
+## Monthly Sales Trends
+
+```{r, echo=FALSE, out.height="500px", out.width="100%"}
+plot_total_sales(unit = "month", interactive = FALSE)
+```
+
+## Weekly Sales Trends
+
+```{r, echo=FALSE, out.height="500px", out.width="100%"}
+plot_total_sales(unit = "week", interactive = FALSE)
+```
+
+# Category Sales Charts {.tabset .tabset-fade .tabset-pills}
+
+## Road {.tabset .tabset-fade}
+
+### Quarterly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Road", category_2 = "All", unit = "quarter", ncol = 1, interactive = FALSE)
+```
+
+### Monthly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Road", category_2 = "All", unit = "month", ncol = 1, interactive = FALSE)
+```
+
+### Weekly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Road", category_2 = "All", unit = "week", ncol = 1, interactive = FALSE)
+```
+
+## Mountain {.tabset .tabset-fade}
+
+### Quarterly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Mountain", category_2 = "All", unit = "quarter", ncol = 1, interactive = FALSE)
+```
+
+### Monthly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Mountain", category_2 = "All", unit = "month", ncol = 1, interactive = FALSE)
+```
+
+### Weekly
+
+```{r, echo=FALSE, fig.width=7, fig.height=9, out.width="90%", out.height="90%"}
+plot_categories(category_1 = "Mountain", category_2 = "All", unit = "week", ncol = 1, interactive = FALSE)
+```

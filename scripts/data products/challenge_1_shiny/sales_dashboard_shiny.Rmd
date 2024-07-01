@@ -1,0 +1,293 @@
+---
+title: "Sales Dashboard"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+runtime: shiny
+resource_files:
+- bikes_tbl.rds
+- bikeshops_tbl.rds
+- orderlines_tbl.rds
+- gadm36_DEU_1_sp.rds
+- plot_sales_shiny.R
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(shinyWidgets)
+
+# Core
+library(tidyverse)
+library(lubridate)
+
+# Interactive Visualizations
+library(plotly)
+
+# Spatial Data
+library(raster)
+library(sf)
+
+# Currency formatting
+source("plot_sales_shiny.R")
+```
+
+```{r}
+# Bike data
+bikes_tbl      <- readRDS("bikes_tbl.rds")
+bikeshops_tbl  <- readRDS("bikeshops_tbl.rds")
+orderlines_tbl <- readRDS("orderlines_tbl.rds")
+
+bike_orderlines_tbl <- orderlines_tbl %>%
+    left_join(bikes_tbl,     by = c("product_id" = "bike_id")) %>%
+    left_join(bikeshops_tbl, by = c("customer_id" = "bikeshop_id")) %>%
+    mutate(total_price = price_euro * quantity)
+
+
+# German spatial data
+germany_sp <- readRDS("gadm36_DEU_1_sp.rds") 
+germany_sf <- st_as_sf(germany_sp) %>% 
+  
+                  # Add english names
+                  mutate(VARNAME_1 = ifelse(is.na(VARNAME_1), NAME_1, VARNAME_1))
+```
+
+Sidebar {.sidebar data-width=257}
+------------------------
+
+```{r}
+# Inputs
+airDatepickerInput(
+  inputId = "date_range",
+  label = h4("Date Range"),
+  placeholder = "Pick Date Range",
+  range = TRUE,
+  value = c(min(bike_orderlines_tbl$order_date), max(bike_orderlines_tbl$order_date)),
+  minDate = min(bike_orderlines_tbl$order_date),
+  maxDate = max(bike_orderlines_tbl$order_date),
+  clearButton = TRUE
+)
+
+prettyCheckboxGroup(inputId = "checkbox_cat1", 
+                   label   = h4("Bike Type"), 
+                   choices = c("Mountain" = "Mountain",
+                               "Road"     = "Road",
+                               "Hybrid / City" = "Hybrid / City",
+                               "E-Bikes"  = "E-Bikes",
+                               "Gravel" = "Gravel"),
+                   selected = c("Mountain", "Road", "Hybrid / City",                                  "E-Bikes", "Gravel"),
+                   icon = icon("check"))
+
+pickerInput(
+  inputId = "checkbox_cat2",
+  label = h4("Bike Family"), 
+  choices = bike_orderlines_tbl %>% distinct(category_2),
+  selected = bike_orderlines_tbl$category_2 %>% unique(),
+  options = pickerOptions(
+    actionsBox = TRUE, 
+    size = 10,
+    selectedTextFormat = "count > 3"
+  ),
+  multiple = TRUE
+)
+```
+
+```{r}
+# Reset Button
+actionButton(inputId = "reset", 
+             label   = "Reset", 
+             icon    = icon("sync"))
+
+observeEvent(eventExpr = input$reset, handlerExpr = {
+  
+  updateAirDateInput(session  = session, 
+                     inputId  = "date_range", 
+                     value = c(min(bike_orderlines_tbl$order_date), max(bike_orderlines_tbl$order_date)))
+  
+  updatePrettyCheckboxGroup(session = session, 
+                            inputId = "checkbox_cat1",
+                            selected = c("Mountain", "Road", "Hybrid / City",                                  "E-Bikes", "Gravel"))
+  
+  updatePickerInput(session = session, 
+                    inputId = "checkbox_cat2",
+                    selected = bike_orderlines_tbl$category_2 %>% unique())
+  
+})
+
+# Action button to avoid rendering after every change
+actionButton(inputId = "apply", 
+             label = "Apply",
+             icon = icon("play"))
+
+bike_orderlines_filtered_tbl <- eventReactive(eventExpr = input$apply, valueExpr = {
+
+  bike_orderlines_tbl %>%
+    filter(category_1 %in% input$checkbox_cat1) %>%
+    filter(category_2 %in% input$checkbox_cat2) %>%
+    filter(order_date %>% between(left  = ymd(input$date_range[1]),
+                                  right = ymd(input$date_range[2])))
+})
+```
+
+```{r}
+output$text_notice <- renderText({
+    "Use the 'Apply' button to initialize the plot and apply changes to the filter options. Ignore initial errors/warnings."
+  })
+
+textOutput(outputId = "text_notice")
+```
+
+```{r}
+# Data manipulation
+geo_plot_tbl <- reactive({
+                  bike_orderlines_filtered_tbl() %>%
+                  group_by(state) %>%
+                  summarise(total_revenue = sum(total_price)) %>%
+                  ungroup() %>%
+                  right_join(germany_sf, by = c("state" = "VARNAME_1")) %>%
+                  mutate(total_revenue = ifelse(is.na(total_revenue), 0, total_revenue)) %>%
+                  mutate(label_text = str_glue("State: {state}
+                                         Revenue: {format_to_euro(total_revenue)}")) %>%
+                  st_as_sf()
+})
+```
+
+Row 
+-------------------------------------
+
+### Total Sales
+
+```{r}
+output$box1 <- renderValueBox( expr = {
+  valueBox(
+    value = geo_plot_tbl()$total_revenue %>% sum() %>% format_to_euro(),
+    color = "#509c2a",
+    icon = "fa-coins"
+    )
+  })
+
+valueBoxOutput(outputId = "box1")
+```
+
+### Orders
+
+```{r}
+output$box2 <- renderValueBox( expr = {
+  valueBox(
+    bike_orderlines_filtered_tbl()$order_id %>% n_distinct(),
+    color = "#254cb8",
+    icon = "fa-cart-shopping"
+  )
+  })
+
+valueBoxOutput(outputId = "box2")
+```
+
+### Average Order Total
+
+```{r}
+data_box2 <- reactive({
+  bike_orderlines_filtered_tbl() %>% 
+  group_by(order_id) %>% 
+  summarise(avg_price = mean(total_price)) %>%
+  ungroup()
+})
+
+output$box3 <- renderValueBox( expr = {
+  valueBox(
+    data_box2()$avg_price %>% mean() %>% round(digits = 2) %>% format_to_euro(),
+    color = "#bf8313",
+    icon = "fa-receipt"
+    )
+  })
+
+valueBoxOutput(outputId = "box3")
+```
+
+Row
+---------------------------------------------------------------
+
+### By State
+
+```{r}
+output$geo_plot <- renderPlotly(expr = {
+plot_ly(geo_plot_tbl(),
+        split      = ~NAME_1,
+        color      = ~total_revenue,
+        colors     = "Blues",
+        stroke     = I("black"),
+        hoverinfo  = 'text',
+        text       = ~label_text,
+        hoveron    = "fills",
+        showlegend = FALSE)
+})
+
+plotlyOutput(outputId = "geo_plot")
+```
+
+### Over Time
+
+```{r}
+# Define plot function for sales
+plot_total_sales_reactive <- function(unit = "month", date_format = "%B %Y") {
+  # Handle Data
+  data_tbl <- reactive({bike_orderlines_filtered_tbl() %>%
+    
+    dplyr::select(order_date, total_price) %>%
+    
+    mutate(date_rounded = floor_date(order_date, unit = unit)) %>%
+    
+    group_by(date_rounded) %>%
+    summarise(total_sales = sum(total_price)) %>%
+    ungroup() %>%
+    
+    mutate(label_text = str_glue("Sales: {format_to_euro(total_sales)}
+                                 Date: {date_rounded %>% format(date_format)}"))
+  })
+    
+  # Make Plot
+  g1 <- reactive({data_tbl() %>%
+    ggplot(aes(x = date_rounded, y = total_sales)) +
+    
+    # Geoms
+    geom_point(aes(text = label_text), color = "#2C3E50") +
+    geom_smooth(method = "loess", span = 0.2) +
+    
+    # Formatting
+    scale_y_continuous(labels = euro_format()) +
+    expand_limits(y = 0) +
+    labs(
+      y = "Revenue (Euro)",
+      x = ""
+    ) +
+    
+    # Make margins for plot output to avoid cutoff
+    theme(plot.margin = margin(t = 5, r = 5, b = 45, l = 5))
+  })
+  
+  return(ggplotly(g1(), tooltip = "text"))
+}
+```
+
+```{r}
+# Input
+radioGroupButtons(
+  inputId = "range_choice",
+  label = "Time Unit",
+  choices = c("Quarterly" = "quarter",
+              "Monthly" = "month", 
+              "Weekly" = "week"),
+  size = "sm",
+  justified = TRUE,
+  status = "primary"
+  )
+```
+
+```{r}
+output$time_plot <- renderPlotly(expr = {
+  plot_total_sales_reactive(unit = input$range_choice)
+})
+
+plotlyOutput(outputId = "time_plot")
+```

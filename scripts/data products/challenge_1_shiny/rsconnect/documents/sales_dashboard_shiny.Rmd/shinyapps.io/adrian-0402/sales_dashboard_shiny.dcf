@@ -1,0 +1,12 @@
+name: sales_dashboard_shiny
+title: sales_dashboard_shiny
+username: adrian-0402
+account: adrian-0402
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12257928
+bundleId: 8809735
+url: https://adrian-0402.shinyapps.io/sales_dashboard_shiny/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
