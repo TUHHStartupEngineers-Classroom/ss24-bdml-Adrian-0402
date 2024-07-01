@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-
-<head>
-
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.3.450" />
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-
-<meta name="author" content="Adrian Florea" />
-
-<title>MyLabJournal – Supervised ML - Regression (II)</title>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Adrian Florea">
+<title>MyLabJournal - Supervised ML - Regression (II)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,8 +54,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
-<script id="quarto-search-options" type="application/json">{
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/icons/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -79,92 +91,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+}</script><link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-
-
 </head>
-
-<body>
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
-    <a class="navbar-brand" href="/index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">MyLabJournal</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-  aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"
-  onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="/index.html" rel="" target="">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-journal" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Journal</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-journal">    
-        <li>
-    <a class="dropdown-item" href="/content/01_journal/01_supervised_ml_reg2.html" rel="" target="">
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-journal">
+<li>
+    <a class="dropdown-item" href="../../content/01_journal/01_supervised_ml_reg2.html" rel="" target="">
  <span class="dropdown-text">01 Supervised ML - Regression (II)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/content/01_journal/02_automated_ml_1.html" rel="" target="">
+    <a class="dropdown-item" href="../../content/01_journal/02_automated_ml_1.html" rel="" target="">
  <span class="dropdown-text">02 Automated Machine Learning with H2O (I)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/content/01_journal/03_automated_ml_2.html" rel="" target="">
+    <a class="dropdown-item" href="../../content/01_journal/03_automated_ml_2.html" rel="" target="">
  <span class="dropdown-text">03 Automated Machine Learning with H2O (II)</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/content/01_journal/04_performance_measures.html" rel="" target="">
+    <a class="dropdown-item" href="../../content/01_journal/04_performance_measures.html" rel="" target="">
  <span class="dropdown-text">04 Performance Measures</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/content/01_journal/05_blackbox_lime.html" rel="" target="">
+    <a class="dropdown-item" href="../../content/01_journal/05_blackbox_lime.html" rel="" target="">
  <span class="dropdown-text">05 Explaining Black-Box Models With LIME</span></a>
   </li>  
     </ul>
-  </li>
+</li>
   <li class="nav-item">
-    <a class="nav-link" href="/content/02_notes/05_class_notes.html" rel="" target="">
+    <a class="nav-link" href="../../content/02_notes/05_class_notes.html" rel="" target="">
  <span class="menu-text">Class notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="/content/03_other/06_links.html" rel="" target="">
+    <a class="nav-link" href="../../content/03_other/06_links.html" rel="" target="">
  <span class="menu-text">Links</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
+<div class="quarto-navbar-tools ms-auto">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <div id="quarto-toc-target"></div>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
+   
+  <ul class="collapse">
+<li><a href="#challenge-2---prepare-data-with-recipe-package" id="toc-challenge-2---prepare-data-with-recipe-package" class="nav-link active" data-scroll-target="#challenge-2---prepare-data-with-recipe-package"><span class="header-section-number">1</span> Challenge 2 - Prepare data with “recipe” package</a></li>
+  <li><a href="#some-remarks" id="toc-some-remarks" class="nav-link" data-scroll-target="#some-remarks"><span class="header-section-number">2</span> Some Remarks</a></li>
+  </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">Supervised ML - Regression (II)</h1>
 </div>
 
@@ -184,19 +186,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header>
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">Contents</h2>
-   
-  <ul>
-  <li><a href="#challenge-2---prepare-data-with-recipe-package" id="toc-challenge-2---prepare-data-with-recipe-package"><span class="header-section-number">1</span> Challenge 2 - Prepare data with “recipe” package</a></li>
-  <li><a href="#some-remarks" id="toc-some-remarks"><span class="header-section-number">2</span> Some Remarks</a></li>
-  </ul>
-</nav>
-<section id="challenge-2---prepare-data-with-recipe-package" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Challenge 2 - Prepare data with “recipe” package</h1>
+</header><section id="challenge-2---prepare-data-with-recipe-package" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Challenge 2 - Prepare data with “recipe” package</h1>
 <div class="cell" data-hash="01_supervised_ml_reg2_cache/html/unnamed-chunk-1_01f61e3215ba4ce58a8280ef3af7d43c">
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r cell-code number-lines"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Standard</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Standard</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Modeling</span></span>
@@ -213,9 +206,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15"></a><span class="co"># 1.0 Build a model (GLM) and load Data ----</span></span>
 <span id="cb1-16"><a href="#cb1-16"></a></span>
 <span id="cb1-17"><a href="#cb1-17"></a>model_glm <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb1-18"><a href="#cb1-18"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;glm&quot;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span>
 <span id="cb1-19"><a href="#cb1-19"></a></span>
-<span id="cb1-20"><a href="#cb1-20"></a>bike_features_tbl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;~/GitHub/ss24-bdml-Adrian-0402/source_data/raw_data/bike_features_tbl.rds&quot;</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a>bike_features_tbl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"~/GitHub/ss24-bdml-Adrian-0402/source_data/raw_data/bike_features_tbl.rds"</span>)</span>
 <span id="cb1-21"><a href="#cb1-21"></a></span>
 <span id="cb1-22"><a href="#cb1-22"></a>bike_features_tbl <span class="ot">&lt;-</span> bike_features_tbl <span class="sc">%&gt;%</span> </span>
 <span id="cb1-23"><a href="#cb1-23"></a>  </span>
@@ -227,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-29"><a href="#cb1-29"></a></span>
 <span id="cb1-30"><a href="#cb1-30"></a><span class="fu">set.seed</span>(<span class="at">seed =</span> <span class="dv">1112</span>)</span>
 <span id="cb1-31"><a href="#cb1-31"></a>split_obj <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(bike_features_tbl, <span class="at">prop   =</span> <span class="fl">0.80</span>, </span>
-<span id="cb1-32"><a href="#cb1-32"></a>                                    <span class="at">strata =</span> <span class="st">&quot;category_2&quot;</span>)</span>
+<span id="cb1-32"><a href="#cb1-32"></a>                                    <span class="at">strata =</span> <span class="st">"category_2"</span>)</span>
 <span id="cb1-33"><a href="#cb1-33"></a></span>
 <span id="cb1-34"><a href="#cb1-34"></a><span class="co"># Check if testing contains all category_2 values</span></span>
 <span id="cb1-35"><a href="#cb1-35"></a><span class="co"># split_obj %&gt;% training() %&gt;% distinct(category_2)</span></span>
@@ -238,14 +231,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-40"><a href="#cb1-40"></a>test_tbl  <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_obj)</span>
 <span id="cb1-41"><a href="#cb1-41"></a></span>
 <span id="cb1-42"><a href="#cb1-42"></a><span class="co"># We have to remove spaces and dashes from the column names</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a>train_tbl <span class="ot">&lt;-</span> train_tbl <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(train_tbl), <span class="st">&quot; |-&quot;</span>, <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb1-44"><a href="#cb1-44"></a>test_tbl  <span class="ot">&lt;-</span> test_tbl  <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(test_tbl),  <span class="st">&quot; |-&quot;</span>, <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb1-43"><a href="#cb1-43"></a>train_tbl <span class="ot">&lt;-</span> train_tbl <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(train_tbl), <span class="st">" |-"</span>, <span class="st">"_"</span>))</span>
+<span id="cb1-44"><a href="#cb1-44"></a>test_tbl  <span class="ot">&lt;-</span> test_tbl  <span class="sc">%&gt;%</span> <span class="fu">set_names</span>(<span class="fu">str_replace_all</span>(<span class="fu">names</span>(test_tbl),  <span class="st">" |-"</span>, <span class="st">"_"</span>))</span>
 <span id="cb1-45"><a href="#cb1-45"></a></span>
 <span id="cb1-46"><a href="#cb1-46"></a><span class="co"># 2.0 Create features with the recipes package ----</span></span>
 <span id="cb1-47"><a href="#cb1-47"></a></span>
 <span id="cb1-48"><a href="#cb1-48"></a>recipe_obj <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price <span class="sc">~</span> ., <span class="at">data =</span> train_tbl) <span class="sc">%&gt;%</span></span>
 <span id="cb1-49"><a href="#cb1-49"></a>  <span class="fu">step_rm</span>(<span class="fu">c</span>(model<span class="sc">:</span>weight),category_1,<span class="fu">c</span>(category_3<span class="sc">:</span>gender)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-50"><a href="#cb1-50"></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">&quot;ID&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-50"><a href="#cb1-50"></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-51"><a href="#cb1-51"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>(), <span class="sc">-</span> <span class="fu">all_outcomes</span>(), <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-52"><a href="#cb1-52"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb1-53"><a href="#cb1-53"></a>  <span class="co"># Use median to guess missing values</span></span>
@@ -260,10 +253,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-62"><a href="#cb1-62"></a><span class="co"># gives us the error:</span></span>
 <span id="cb1-63"><a href="#cb1-63"></a></span>
 <span id="cb1-64"><a href="#cb1-64"></a><span class="co"># Error in `add_recipe()`:</span></span>
-<span id="cb1-65"><a href="#cb1-65"></a><span class="co"># !Can&#39;t add a trained recipe to a workflow.</span></span>
+<span id="cb1-65"><a href="#cb1-65"></a><span class="co"># !Can't add a trained recipe to a workflow.</span></span>
 <span id="cb1-66"><a href="#cb1-66"></a></span>
 <span id="cb1-67"><a href="#cb1-67"></a><span class="co"># One cannot use prep() and bake() if it is to be bundled into a workflow</span></span>
-<span id="cb1-68"><a href="#cb1-68"></a><span class="co"># therefore we omit those steps from above and use it &quot;unprepped&quot;</span></span>
+<span id="cb1-68"><a href="#cb1-68"></a><span class="co"># therefore we omit those steps from above and use it "unprepped"</span></span>
 <span id="cb1-69"><a href="#cb1-69"></a></span>
 <span id="cb1-70"><a href="#cb1-70"></a>bikes_wflow <span class="ot">&lt;-</span></span>
 <span id="cb1-71"><a href="#cb1-71"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
@@ -289,43 +282,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-91"><a href="#cb1-91"></a>}</span>
 <span id="cb1-92"><a href="#cb1-92"></a></span>
 <span id="cb1-93"><a href="#cb1-93"></a><span class="co"># Evaluate</span></span>
-<span id="cb1-94"><a href="#cb1-94"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">calc_metrics</span>(<span class="at">new_data =</span> test_tbl)</span></code></pre></div>
+<span id="cb1-94"><a href="#cb1-94"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">calc_metrics</span>(<span class="at">new_data =</span> test_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
+  <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":[".metric"],"name":[1],"type":["chr"],"align":["left"]},{"label":[".estimator"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".estimate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"rmse","2":"standard","3":"813.0782792"},{"1":"rsq","2":"standard","3":"0.7639036"},{"1":"mae","2":"standard","3":"555.1790854"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
-</section>
-<section id="some-remarks" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Some Remarks</h1>
+</section><section id="some-remarks" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> Some Remarks</h1>
 <p>Using all_nominal() creates a lot more columns for every specific type as opposed to the advanced string manipulation done for rear derailleurs and shift levers in the business case (which grouped similar names). Therefore, unknown values can appear during predictions, because they only appeared in the training data, and not in the testing data. Thus, step_dummy() could not create variables for the unknown testing data set.</p>
 <p>Although step_impute_median() makes predicting with missing values possible, the result is hardly accurate. This can be seen by large errors for certain data points.</p>
 <div class="cell" data-hash="01_supervised_ml_reg2_cache/html/unnamed-chunk-2_03509237cdbd4d4a6bb4c4241ee8ed52">
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r cell-code number-lines"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">predict</span>(<span class="at">new_data =</span> test_tbl) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">bind_cols</span>(test_tbl <span class="sc">%&gt;%</span> <span class="fu">select</span>(price))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>bikes_fit <span class="sc">%&gt;%</span> <span class="fu">predict</span>(<span class="at">new_data =</span> test_tbl) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">bind_cols</span>(test_tbl <span class="sc">%&gt;%</span> <span class="fu">select</span>(price))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
+  <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":[".pred_res"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"6681.7169","2":"5359"},{"1":"3817.6152","2":"3699"},{"1":"1937.8194","2":"1559"},{"1":"1119.0000","2":"1269"},{"1":"1937.8194","2":"1169"},{"1":"1119.0000","2":"969"},{"1":"2499.6273","2":"2629"},{"1":"1937.8194","2":"2049"},{"1":"1937.8194","2":"1459"},{"1":"3704.0000","2":"3219"},{"1":"4803.3995","2":"4389"},{"1":"2919.0000","2":"3309"},{"1":"2771.8339","2":"2529"},{"1":"6351.7169","2":"7409"},{"1":"6626.3321","2":"6039"},{"1":"4741.2202","2":"5359"},{"1":"3600.6607","2":"3219"},{"1":"5077.4328","2":"4579"},{"1":"1684.0169","2":"1659"},{"1":"4690.5686","2":"3599"},{"1":"2469.0000","2":"1749"},{"1":"2469.0000","2":"1749"},{"1":"1459.0000","2":"1459"},{"1":"3218.1680","2":"3119"},{"1":"779.0000","2":"779"},{"1":"2919.0000","2":"2529"},{"1":"5896.5000","2":"4279"},{"1":"5896.5000","2":"4869"},{"1":"3938.4068","2":"3599"},{"1":"1985.5716","2":"3219"},{"1":"1169.0000","2":"1459"},{"1":"2434.0000","2":"2139"},{"1":"3729.9741","2":"3609"},{"1":"3567.5995","2":"3899"},{"1":"2009.0000","2":"5649"},{"1":"2529.0000","2":"2139"},{"1":"5006.3735","2":"4579"},{"1":"2905.7726","2":"2729"},{"1":"1953.8815","2":"2239"},{"1":"3865.6667","2":"3219"},{"1":"3454.0000","2":"2529"},{"1":"4869.0000","2":"4869"},{"1":"1926.8820","2":"1069"},{"1":"712.2709","2":"1069"},{"1":"964.2769","2":"1069"},{"1":"4023.3995","2":"2919"},{"1":"964.2769","2":"1559"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
-<div id="quarto-navigation-envelope" class="hidden">
-<p><span class="hidden" data-render-id="quarto-int-sidebar-title">MyLabJournal</span> <span class="hidden" data-render-id="quarto-int-navbar-title">MyLabJournal</span> <span class="hidden" data-render-id="quarto-int-navbar:Home">Home</span> <span class="hidden" data-render-id="quarto-int-navbar:/index.html">/index.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Journal">Journal</span> <span class="hidden" data-render-id="quarto-int-navbar:01 Supervised ML - Regression (II)">01 Supervised ML - Regression (II)</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/01_journal/01_supervised_ml_reg2.html">/content/01_journal/01_supervised_ml_reg2.html</span> <span class="hidden" data-render-id="quarto-int-navbar:02 Automated Machine Learning with H2O (I)">02 Automated Machine Learning with H2O (I)</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/01_journal/02_automated_ml_1.html">/content/01_journal/02_automated_ml_1.html</span> <span class="hidden" data-render-id="quarto-int-navbar:03 Automated Machine Learning with H2O (II)">03 Automated Machine Learning with H2O (II)</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/01_journal/03_automated_ml_2.html">/content/01_journal/03_automated_ml_2.html</span> <span class="hidden" data-render-id="quarto-int-navbar:04 Performance Measures">04 Performance Measures</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/01_journal/04_performance_measures.html">/content/01_journal/04_performance_measures.html</span> <span class="hidden" data-render-id="quarto-int-navbar:05 Explaining Black-Box Models With LIME">05 Explaining Black-Box Models With LIME</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/01_journal/05_blackbox_lime.html">/content/01_journal/05_blackbox_lime.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Class notes">Class notes</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/02_notes/05_class_notes.html">/content/02_notes/05_class_notes.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Links">Links</span> <span class="hidden" data-render-id="quarto-int-navbar:/content/03_other/06_links.html">/content/03_other/06_links.html</span></p>
-</div>
-<div id="quarto-meta-markdown" class="hidden">
-<p><span class="hidden" data-render-id="quarto-metatitle">MyLabJournal - Supervised ML - Regression (II)</span> <span class="hidden" data-render-id="quarto-twittercardtitle">MyLabJournal - Supervised ML - Regression (II)</span> <span class="hidden" data-render-id="quarto-ogcardtitle">MyLabJournal - Supervised ML - Regression (II)</span> <span class="hidden" data-render-id="quarto-metasitename">MyLabJournal</span> <span class="hidden" data-render-id="quarto-twittercarddesc"></span> <span class="hidden" data-render-id="quarto-ogcardddesc"></span></p>
-</div>
-</section>
 
-</main> <!-- /main -->
-<script id = "quarto-html-after-body" type="application/javascript">
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -675,6 +660,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+</body></html>
